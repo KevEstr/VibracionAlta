@@ -1,0 +1,1072 @@
+/* Home Page - Vibración Alta - Diseño Espiritual Espectacular */
+.home {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 30, 48, 0.85) 0%,
+    rgba(36, 59, 85, 0.75) 25%,
+    rgba(44, 83, 100, 0.65) 50%,
+    rgba(52, 144, 220, 0.55) 75%,
+    rgba(64, 224, 208, 0.45) 100%
+  );
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  max-width: 900px;
+  padding: 4rem 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.hero-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Logo Container - Integrado perfectamente */
+.logo-container {
+  position: relative;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 0 0 8px rgba(255, 255, 255, 0.1),
+    0 0 0 16px rgba(255, 255, 255, 0.05),
+    0 20px 60px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.logo:hover {
+  transform: scale(1.03);
+  box-shadow: 
+    0 0 0 6px rgba(255, 255, 255, 0.15),
+    0 0 0 12px rgba(255, 255, 255, 0.08),
+    0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.logo-glow {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: pulse 4s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.7;
+  }
+}
+
+/* Typography */
+.hero-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.3;
+  color: white;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  font-family: 'Georgia', serif;
+  margin: 0;
+  max-width: 800px;
+  text-align: center;
+}
+
+.highlight {
+  display: block;
+  font-weight: 400;
+  color: #f0f8ff;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+  margin-top: 0.5rem;
+  position: relative;
+}
+
+.highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #f0f8ff, transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+/* Reserve Button - Espiritual y elegante */
+.reserve-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Georgia', serif;
+}
+
+.reserve-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s;
+}
+
+.reserve-btn:hover::before {
+  left: 100%;
+}
+
+.reserve-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.reserve-btn:active {
+  transform: translateY(-1px);
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: bounce 2s infinite;
+}
+
+.scroll-indicator:hover {
+  color: white;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+/* Spiritual Elements */
+.spiritual-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.element {
+  position: absolute;
+  font-size: 2.5rem;
+  opacity: 0.4;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.element-1 {
+  top: 15%;
+  left: 10%;
+  animation: float1 8s ease-in-out infinite;
+}
+
+.element-2 {
+  top: 25%;
+  right: 15%;
+  animation: float2 10s ease-in-out infinite;
+}
+
+.element-3 {
+  bottom: 20%;
+  left: 20%;
+  animation: float3 12s ease-in-out infinite;
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(15px) rotate(-8deg); }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-25px) rotate(5deg); }
+}
+
+/* Booking Section - Diseño Espiritual Original */
+.booking-section {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 30, 48, 0.95) 0%,
+    rgba(36, 59, 85, 0.9) 25%,
+    rgba(44, 83, 100, 0.85) 50%,
+    rgba(52, 144, 220, 0.8) 75%,
+    rgba(64, 224, 208, 0.75) 100%
+  );
+  backdrop-filter: blur(10px);
+  position: relative;
+  padding: 4rem 0;
+  overflow: hidden;
+}
+
+/* Elementos Espirituales de Fondo */
+.spiritual-background-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-element {
+  position: absolute;
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  z-index: 1;
+}
+
+.floating-1 {
+  top: 10%;
+  left: 5%;
+  font-size: 2.5rem;
+}
+
+.floating-2 {
+  top: 20%;
+  right: 8%;
+  font-size: 3.5rem;
+}
+
+.floating-3 {
+  top: 40%;
+  left: 3%;
+  font-size: 2.8rem;
+}
+
+.floating-4 {
+  top: 60%;
+  right: 5%;
+  font-size: 3.2rem;
+}
+
+.floating-5 {
+  top: 80%;
+  left: 10%;
+  font-size: 2.2rem;
+}
+
+.floating-6 {
+  top: 70%;
+  right: 12%;
+  font-size: 2.8rem;
+}
+
+/* Líneas de Energía Espiritual */
+.energy-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.energy-line {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.3) 20%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    rgba(255, 255, 255, 0.3) 80%, 
+    transparent 100%
+  );
+  transform-origin: left center;
+}
+
+.line-1 {
+  top: 25%;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.2) 20%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    rgba(255, 255, 255, 0.2) 80%, 
+    transparent 100%
+  );
+}
+
+.line-2 {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.15) 20%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    rgba(255, 255, 255, 0.15) 80%, 
+    transparent 100%
+  );
+}
+
+.line-3 {
+  top: 75%;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.1) 20%, 
+    rgba(255, 255, 255, 0.25) 50%, 
+    rgba(255, 255, 255, 0.1) 80%, 
+    transparent 100%
+  );
+}
+
+.booking-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Formulario Espiritual */
+.spiritual-form {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(25px);
+  border-radius: 30px;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+  padding: 2.5rem;
+  position: relative;
+}
+
+/* Header del Formulario */
+.form-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.form-header h2 {
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  font-family: 'Georgia', serif;
+}
+
+.form-header p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 400;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Steps Container */
+.steps-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.steps-container::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.step.active .step-icon {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.step.current .step-icon {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.step-title {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.step.active .step-title {
+  color: white;
+  font-weight: 600;
+}
+
+/* Form Content */
+.form-content {
+  margin-bottom: 3rem;
+  min-height: 300px;
+  position: relative;
+}
+
+/* Elementos Decorativos Laterales */
+.side-decorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.decoration-left,
+.decoration-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.decoration-left {
+  left: -120px;
+}
+
+.decoration-right {
+  right: -120px;
+}
+
+.spiritual-symbol {
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  font-weight: 300;
+}
+
+.step-form h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  font-family: 'Georgia', serif;
+}
+
+/* Input Group */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-field {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 1rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus-within {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.input-field svg {
+  color: rgba(255, 255, 255, 0.8);
+  flex-shrink: 0;
+}
+
+.input-field input {
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 400;
+  width: 100%;
+}
+
+.input-field input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* Schedule Options */
+.schedule-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.date-picker input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 300;
+  text-align: center;
+}
+
+.date-picker input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.time-slot {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.time-slot:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.time-slot.selected {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+}
+
+/* Message Field */
+.message-field textarea {
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 400;
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+.message-field textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.message-field textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Confirmation Details */
+.confirmation-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+}
+
+.detail-item span:first-child {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.detail-item span:last-child {
+  color: white;
+  font-weight: 600;
+}
+
+/* Form Navigation */
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(25px);
+  font-family: 'Georgia', serif;
+}
+
+.nav-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+  border-color: rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.25) 100%);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 100vh; /* Altura completa del viewport */
+    height: 100vh; /* Fuerza altura exacta del viewport */
+  }
+
+  .hero-background {
+    background-size: cover !important; /* Cubre toda la pantalla */
+    background-position: center center !important; /* Centra la imagen */
+    background-repeat: no-repeat !important; /* No repite la imagen */
+    height: 100vh !important; /* Altura completa del viewport */
+    width: 100% !important; /* Ancho completo */
+  }
+
+  .hero-content {
+    padding: 2rem 1.5rem; /* Más padding vertical */
+    min-height: 100vh; /* Asegura que ocupe toda la pantalla */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .logo {
+    width: 150px; /* Más grande en móviles */
+    height: 150px;
+  }
+
+  .hero-title {
+    font-size: 2.5rem; /* Más grande en móviles */
+    margin-bottom: 1.5rem; /* Más espacio */
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem; /* Más grande en móviles */
+    margin-bottom: 2rem; /* Más espacio */
+  }
+
+  .reserve-btn {
+    padding: 1.2rem 2.5rem; /* Más grande en móviles */
+    font-size: 1.1rem;
+    gap: 0.8rem;
+    margin-top: 1rem; /* Más espacio superior */
+  }
+
+  .element {
+    font-size: 2.5rem; /* Más grande en móviles */
+  }
+
+  .booking-container {
+    padding: 0 1rem;
+  }
+
+  .spiritual-form {
+    padding: 2rem;
+  }
+
+  .form-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .form-header p {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .steps-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .steps-container::before {
+    display: none;
+  }
+
+  .step {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  .step-icon {
+    margin-bottom: 0;
+  }
+
+  .time-slots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .nav-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .decoration-left,
+  .decoration-right {
+    display: none;
+  }
+
+  .floating-element {
+    font-size: 2rem;
+  }
+
+  .floating-1 { font-size: 1.8rem; }
+  .floating-2 { font-size: 2.2rem; }
+  .floating-3 { font-size: 2rem; }
+  .floating-4 { font-size: 2.1rem; }
+  .floating-5 { font-size: 1.6rem; }
+  .floating-6 { font-size: 2rem; }
+}
+
+/* Estilos específicos para móviles muy grandes (iPhone 14 Pro Max, etc.) */
+@media (max-width: 768px) and (min-height: 800px) {
+  .hero {
+    min-height: 100vh; /* Altura completa del viewport */
+    height: 100vh; /* Fuerza altura exacta del viewport */
+  }
+
+  .hero-background {
+    background-size: cover !important; /* Cubre toda la pantalla */
+    background-position: center center !important; /* Centra la imagen */
+    background-repeat: no-repeat !important; /* No repite la imagen */
+    height: 100vh !important; /* Altura completa del viewport */
+    width: 100% !important; /* Ancho completo */
+  }
+
+  .hero-content {
+    padding: 3rem 1.5rem; /* Más padding para pantallas grandes */
+  }
+
+  .logo {
+    width: 180px; /* Más grande en pantallas grandes */
+    height: 180px;
+  }
+
+  .hero-title {
+    font-size: 2.8rem; /* Más grande en pantallas grandes */
+    margin-bottom: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.4rem; /* Más grande en pantallas grandes */
+    margin-bottom: 2.5rem;
+  }
+
+  .reserve-btn {
+    padding: 1.4rem 3rem; /* Más grande en pantallas grandes */
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+  }
+
+  .element {
+    font-size: 3rem; /* Más grande en pantallas grandes */
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    min-height: 100vh; /* Mantiene altura completa en móviles pequeños */
+    height: 100vh; /* Fuerza altura exacta del viewport */
+  }
+
+  .hero-background {
+    background-size: cover !important; /* Cubre toda la pantalla */
+    background-position: center center !important; /* Centra la imagen */
+    background-repeat: no-repeat !important; /* No repite la imagen */
+    height: 100vh !important; /* Altura completa del viewport */
+    width: 100% !important; /* Ancho completo */
+  }
+
+  .hero-content {
+    padding: 1.5rem 1rem; /* Ajustado para móviles pequeños */
+  }
+
+  .logo {
+    width: 120px; /* Tamaño intermedio para móviles pequeños */
+    height: 120px;
+  }
+
+  .hero-title {
+    font-size: 2rem; /* Ajustado para móviles pequeños */
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem; /* Ajustado para móviles pequeños */
+  }
+
+  .reserve-btn {
+    padding: 1rem 2rem; /* Ajustado para móviles pequeños */
+    font-size: 1rem;
+    gap: 0.6rem;
+  }
+
+  .element {
+    font-size: 2rem; /* Ajustado para móviles pequeños */
+  }
+
+  .element-1 {
+    top: 20%;
+    left: 5%;
+  }
+
+  .element-2 {
+    top: 30%;
+    right: 10%;
+  }
+
+  .element-3 {
+    bottom: 25%;
+    left: 15%;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading animation for booking section */
+.booking-section {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

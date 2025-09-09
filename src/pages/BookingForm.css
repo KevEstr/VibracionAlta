@@ -1,0 +1,521 @@
+/* Booking Form - Vibración Alta - Diseño Espiritual Integrado */
+.booking-form-page {
+  padding: 0;
+  min-height: 100vh;
+  background: transparent;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 3rem 0 2rem;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: white;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  font-family: 'Georgia', serif;
+}
+
+.page-header p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 300;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.form-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 30px;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.booking-form {
+  padding: 2.5rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.form-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: white;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  font-family: 'Georgia', serif;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.form-section h3 svg {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  font-family: inherit;
+  color: white;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.form-control.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+/* Time Slots */
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.time-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.time-slot:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.time-slot.selected {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  margin: 0;
+  cursor: pointer;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* File Upload */
+.file-upload {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 2px dashed rgba(102, 126, 234, 0.3);
+  border-radius: 15px;
+  background: rgba(102, 126, 234, 0.05);
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  justify-content: center;
+  font-weight: 400;
+}
+
+.file-label:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.remove-file {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.remove-file:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+.file-help {
+  display: block;
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Form Actions */
+.form-actions {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Georgia', serif;
+  text-decoration: none;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Success State */
+.success-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 30, 48, 0.95) 0%,
+    rgba(36, 59, 85, 0.9) 25%,
+    rgba(44, 83, 100, 0.85) 50%,
+    rgba(52, 144, 220, 0.8) 75%,
+    rgba(64, 224, 208, 0.75) 100%
+  );
+  backdrop-filter: blur(10px);
+}
+
+.success-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  max-width: 500px;
+  width: 100%;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  color: white;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.success-card h2 {
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: #2c1810;
+  margin-bottom: 1rem;
+  font-family: 'Georgia', serif;
+}
+
+.success-card p {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom Calendar Styles */
+.custom-calendar {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.custom-calendar .react-datepicker__header {
+  background: rgba(255, 255, 255, 0.2);
+  border-bottom: none;
+  border-radius: 13px 13px 0 0;
+  backdrop-filter: blur(10px);
+}
+
+.custom-calendar .react-datepicker__current-month {
+  color: white;
+  font-weight: 400;
+  font-family: 'Georgia', serif;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.custom-calendar .react-datepicker__day-name {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+.custom-calendar .react-datepicker__day--disabled {
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+}
+
+.custom-calendar .react-datepicker__day--selected {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.custom-calendar .react-datepicker__day:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+  }
+
+  .form-container {
+    padding: 0 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .booking-form {
+    padding: 1.5rem;
+  }
+
+  .form-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .time-slots {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .time-slot {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .success-card {
+    padding: 2rem;
+  }
+
+  .success-actions {
+    flex-direction: column;
+  }
+
+  .success-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-form {
+    padding: 1rem;
+  }
+
+  .form-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .time-slots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .file-upload {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .remove-file {
+    align-self: flex-end;
+  }
+}
