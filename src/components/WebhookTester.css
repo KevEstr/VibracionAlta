@@ -1,0 +1,158 @@
+.webhook-tester {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 1rem 0;
+}
+
+.tester-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tester-header h3 {
+  margin: 0;
+  color: #374151;
+  font-size: 1.2rem;
+}
+
+.tester-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.url-input {
+  margin-bottom: 1.5rem;
+}
+
+.url-input label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.url-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+}
+
+.url-field:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.test-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.test-result.success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.test-result.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.result-icon {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.result-content {
+  flex: 1;
+}
+
+.result-content h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.success-info p {
+  margin: 0 0 0.5rem 0;
+  color: #374151;
+}
+
+.data-preview {
+  background: #1f2937;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  overflow-x: auto;
+  margin: 0.5rem 0 0 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.error-info p {
+  margin: 0;
+  color: #dc2626;
+}
+
+.tester-info {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.tester-info h4 {
+  margin: 0 0 0.75rem 0;
+  color: #374151;
+  font-size: 1rem;
+}
+
+.tester-info ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.tester-info li {
+  margin-bottom: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tester-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .tester-actions {
+    flex-direction: column;
+  }
+
+  .tester-actions .btn {
+    width: 100%;
+  }
+}

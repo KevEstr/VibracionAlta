@@ -1,0 +1,161 @@
+{
+  "name": "Calendar Slots API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calendar-slots",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "calendar-slots-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "getEvents",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-action",
+      "name": "Check Action",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "event",
+        "operation": "getAll",
+        "calendarId": {
+          "__rl": true,
+          "value": "primary",
+          "mode": "list",
+          "cachedResultName": "Primary Calendar"
+        },
+        "returnAll": false,
+        "limit": 100,
+        "options": {
+          "timeMin": "={{ $json.startDate }}",
+          "timeMax": "={{ $json.endDate }}"
+        }
+      },
+      "id": "get-calendar-events",
+      "name": "Get Calendar Events",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [680, 200],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "google-calendar-credentials",
+          "name": "Google Calendar OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtener datos del webhook\nconst { startDate, endDate, action } = $input.first().json;\n\nif (action === 'getEvents') {\n  // Procesar eventos del calendario\n  const events = $input.all().map(item => ({\n    id: item.json.id,\n    title: item.json.summary || 'Sin título',\n    start: item.json.start.dateTime || item.json.start.date,\n    end: item.json.end.dateTime || item.json.end.date,\n    status: item.json.status || 'confirmed'\n  }));\n  \n  return {\n    events: events,\n    status: 'success',\n    timestamp: new Date().toISOString()\n  };\n}\n\nif (action === 'getSlots' || !action) {\n  // Generar slots disponibles\n  const events = $input.all().map(item => ({\n    start: item.json.start.dateTime || item.json.start.date,\n    end: item.json.end.dateTime || item.json.end.date\n  }));\n  \n  const slots = generateAvailableSlots(startDate, endDate, events);\n  \n  return {\n    slots: slots,\n    status: 'success',\n    timestamp: new Date().toISOString()\n  };\n}\n\nfunction generateAvailableSlots(startDate, endDate, events) {\n  const slots = [];\n  const start = new Date(startDate);\n  const end = new Date(endDate);\n  \n  // Generar slots de 8:00 AM a 5:00 PM\n  for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {\n    for (let hour = 8; hour < 17; hour++) {\n      for (let minute = 0; minute < 60; minute += 30) {\n        const slotTime = new Date(date);\n        slotTime.setHours(hour, minute, 0, 0);\n        \n        // Verificar si el slot está disponible\n        const isAvailable = !events.some(event => {\n          const eventStart = new Date(event.start);\n          const eventEnd = new Date(event.end);\n          return slotTime >= eventStart && slotTime < eventEnd;\n        });\n        \n        if (isAvailable) {\n          slots.push({\n            date: slotTime.toISOString(),\n            time: `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,\n            duration: 30,\n            available: true\n          });\n        }\n      }\n    }\n  }\n  \n  return slots;\n}"
+      },
+      "id": "process-data",
+      "name": "Process Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Action": {
+      "main": [
+        [
+          {
+            "node": "Get Calendar Events",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Process Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Calendar Events": {
+      "main": [
+        [
+          {
+            "node": "Process Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Data": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-03-15T12:00:00.000Z",
+  "versionId": "1"
+}

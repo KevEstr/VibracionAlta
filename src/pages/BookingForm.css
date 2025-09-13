@@ -331,11 +331,11 @@ textarea.form-control {
   padding: 2rem;
   background: linear-gradient(
     135deg,
-    rgba(20, 30, 48, 0.95) 0%,
-    rgba(36, 59, 85, 0.9) 25%,
-    rgba(44, 83, 100, 0.85) 50%,
-    rgba(52, 144, 220, 0.8) 75%,
-    rgba(64, 224, 208, 0.75) 100%
+    rgba(20, 30, 48, 0.98) 0%,
+    rgba(36, 59, 85, 0.95) 25%,
+    rgba(44, 83, 100, 0.92) 50%,
+    rgba(52, 144, 220, 0.88) 75%,
+    rgba(64, 224, 208, 0.85) 100%
   );
   backdrop-filter: blur(10px);
 }
@@ -444,6 +444,46 @@ textarea.form-control {
 
 .custom-calendar .react-datepicker__day:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Selected slot display */
+.selected-slot-display {
+  background: #f0f9ff;
+  border: 2px solid #0ea5e9;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.slot-info h4 {
+  margin: 0 0 1rem 0;
+  color: #0c4a6e;
+  font-size: 1.1rem;
+}
+
+.slot-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slot-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0369a1;
+  font-size: 0.9rem;
+}
+
+.form-help {
+  display: block;
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-size: 0.8rem;
 }
 
 /* Responsive Design */

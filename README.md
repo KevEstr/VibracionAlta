@@ -93,41 +93,60 @@ El sistema está completamente optimizado para:
 
 ## 🔌 Integración con N8N
 
-El formulario está preparado para enviar datos a N8N. Los datos se envían en el siguiente formato:
+El sistema ahora incluye integración completa con N8N para mostrar slots disponibles del calendario de forma visual.
 
-```javascript
+### Características de la Integración
+
+- **Webhook HTTP**: Reemplaza el chat de N8N por un webhook HTTP
+- **Slots Disponibles**: Muestra horarios disponibles de 8:00 AM a 5:00 PM
+- **Tiempo Real**: Actualización automática de disponibilidad
+- **Visual**: Interfaz visual para seleccionar horarios
+
+### Configuración
+
+1. **Variables de Entorno**
+   ```env
+   REACT_APP_N8N_WEBHOOK_URL=https://tu-n8n-instance.com/webhook/calendar-slots
+   ```
+
+2. **Servicio N8N** (`src/services/n8nService.js`)
+   - `getAvailableSlots(startDate, endDate)` - Obtiene slots disponibles
+   - `getCalendarEvents(startDate, endDate)` - Obtiene eventos del calendario
+   - `createAppointment(appointmentData)` - Crea nuevas citas
+
+3. **Flujo de N8N**
+   - Webhook → Google Calendar → Code (filtrado) → Webhook Response
+   - Importa el archivo `n8n-workflow-example.json` en tu instancia de N8N
+
+### Estructura de Datos
+
+**Request al webhook:**
+```json
 {
-  fullName: "string",
-  email: "string", 
-  phone: "string",
-  selectedDate: "ISO string",
-  selectedTime: "string",
-  reason: "string",
-  comments: "string",
-  paymentRequired: boolean,
-  paymentProof: "string|null",
-  timestamp: "ISO string"
+  "startDate": "2024-03-15T00:00:00.000Z",
+  "endDate": "2024-03-22T23:59:59.999Z",
+  "action": "getSlots"
 }
 ```
 
-### Endpoint de Integración
-```javascript
-// En BookingForm.js, línea ~80
-const formData = {
-  ...data,
-  selectedDate: selectedDate?.toISOString(),
-  selectedTime,
-  paymentProof: paymentProof ? paymentProof.name : null,
-  timestamp: new Date().toISOString()
-};
-
-// Aquí conectarías con tu webhook de N8N
-// await fetch('TU_WEBHOOK_URL', {
-//   method: 'POST',
-//   headers: { 'Content-Type': 'application/json' },
-//   body: JSON.stringify(formData)
-// });
+**Response del webhook:**
+```json
+{
+  "slots": [
+    {
+      "date": "2024-03-15T08:00:00.000Z",
+      "time": "08:00",
+      "duration": 30,
+      "available": true
+    }
+  ],
+  "status": "success"
+}
 ```
+
+### Documentación Completa
+
+Ver `N8N_INTEGRATION.md` para instrucciones detalladas de configuración.
 
 ## 📅 Integración con Google Calendar
 
@@ -190,9 +209,13 @@ src/
 - [x] Filtros y búsqueda
 - [x] Estados de carga
 - [x] Validaciones de formulario
+- [x] **Integración con N8N via Webhook**
+- [x] **Visualización de slots disponibles**
+- [x] **Servicio para conectar con N8N**
+- [x] **Componente de slots disponibles**
 
 ### 🔄 Pendientes de Integración
-- [ ] Conexión real con N8N
+- [ ] Configuración del webhook en N8N
 - [ ] Integración con Google Calendar API
 - [ ] Sistema de autenticación
 - [ ] Base de datos para persistencia

@@ -24,6 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "https://vibracionaltacalendar.app.n8n.cloud",
   "eslintConfig": {
     "extends": [
       "react-app",

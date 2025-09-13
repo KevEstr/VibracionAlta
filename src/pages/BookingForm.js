@@ -4,11 +4,14 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, User, Mail, Phone, Upload, CheckCircle, AlertCircle, X, Sparkles, MapPin } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import SlotSelector from '../components/SlotSelector';
 import './BookingForm.css';
 
 const BookingForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState('');
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [showSlotSelector, setShowSlotSelector] = useState(false);
   const [paymentProof, setPaymentProof] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -23,11 +26,29 @@ const BookingForm = () => {
 
   const paymentRequired = watch('paymentRequired', false);
 
-  // Horarios disponibles (esto se conectaría con tu API)
-  const availableTimes = [
-    '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
-  ];
+  // Función para manejar la búsqueda de slots
+  const handleSearchSlots = () => {
+    if (selectedDate) {
+      setShowSlotSelector(true);
+    }
+  };
+
+  // Función para manejar la selección de un slot
+  const handleSlotSelect = (slot) => {
+    setSelectedSlot(slot);
+  };
+
+  // Función para continuar con el slot seleccionado
+  const handleSlotContinue = (slot) => {
+    setSelectedSlot(slot);
+    setShowSlotSelector(false);
+  };
+
+  // Función para volver del selector de slots
+  const handleSlotBack = () => {
+    setShowSlotSelector(false);
+    setSelectedSlot(null);
+  };
 
   // Fechas no disponibles (esto se conectaría con Google Calendar)
   const unavailableDates = [
@@ -36,14 +57,20 @@ const BookingForm = () => {
   ];
 
   const onSubmit = async (data) => {
+    if (!selectedSlot) {
+      alert('Por favor selecciona un horario disponible');
+      return;
+    }
+
     setIsSubmitting(true);
     
     // Simular envío a N8N
     try {
       const formData = {
         ...data,
-        selectedDate: selectedDate?.toISOString(),
-        selectedTime,
+        selectedDate: selectedSlot.day,
+        selectedTime: selectedSlot.time,
+        slotDuration: selectedSlot.duration,
         paymentProof: paymentProof ? paymentProof.name : null,
         timestamp: new Date().toISOString()
       };
@@ -57,6 +84,7 @@ const BookingForm = () => {
       reset();
       setSelectedDate(null);
       setSelectedTime('');
+      setSelectedSlot(null);
       setPaymentProof(null);
     } catch (error) {
       console.error('Error al enviar formulario:', error);
@@ -116,6 +144,23 @@ const BookingForm = () => {
           </div>
         </div>
       </motion.div>
+    );
+  }
+
+  // Si se está mostrando el selector de slots
+  if (showSlotSelector) {
+    return (
+      <div className="booking-form-page">
+        <div className="container">
+          <SlotSelector
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            onSlotSelect={handleSlotSelect}
+            onBack={handleSlotBack}
+            onContinue={handleSlotContinue}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -248,28 +293,71 @@ const BookingForm = () => {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Selecciona la Hora *</label>
-                    <div className="time-slots">
-                      {availableTimes.map((time) => (
-                        <button
-                          key={time}
-                          type="button"
-                          className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
-                          onClick={() => setSelectedTime(time)}
-                        >
-                          <Clock size={16} />
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                    {!selectedTime && (
-                      <div className="error-message">
-                        <AlertCircle size={16} />
-                        Selecciona una hora
-                      </div>
-                    )}
+                    <label className="form-label">Hora Preferida (Opcional)</label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      value={selectedTime}
+                      onChange={(e) => setSelectedTime(e.target.value)}
+                      placeholder="HH:MM"
+                    />
+                    <small className="form-help">
+                      Si no especificas hora, verás todos los horarios disponibles del día
+                    </small>
                   </div>
                 </div>
+
+                {/* Botón para buscar horarios */}
+                <div className="form-group">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-lg"
+                    onClick={handleSearchSlots}
+                    disabled={!selectedDate}
+                  >
+                    <Calendar size={20} />
+                    Buscar Horarios Disponibles
+                  </button>
+                </div>
+
+                {/* Mostrar slot seleccionado */}
+                {selectedSlot && (
+                  <motion.div
+                    className="selected-slot-display"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="slot-info">
+                      <h4>Horario Seleccionado:</h4>
+                      <div className="slot-details">
+                        <div className="slot-detail">
+                          <Calendar size={16} />
+                          <span>{new Date(selectedSlot.day).toLocaleDateString('es-ES', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}</span>
+                        </div>
+                        <div className="slot-detail">
+                          <Clock size={16} />
+                          <span>{selectedSlot.time} ({selectedSlot.duration} min)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => {
+                        setSelectedSlot(null);
+                        setShowSlotSelector(true);
+                      }}
+                    >
+                      Cambiar Horario
+                    </button>
+                  </motion.div>
+                )}
               </div>
 
               {/* Información Adicional */}
