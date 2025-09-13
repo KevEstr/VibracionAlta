@@ -19,12 +19,17 @@
 
 .home {
   position: relative;
-  min-height: 200vh; /* Doble altura para cubrir ambas secciones */
+  min-height: 100vh; /* Solo altura del viewport inicialmente */
   background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
+}
+
+/* Cuando la sección de reserva esté visible, expandir la altura */
+.home.with-booking {
+  min-height: 200vh; /* Doble altura cuando se muestra la sección de reserva */
 }
 
 /* Fondo unificado con gradiente dinámico y colores cambiantes */
@@ -357,6 +362,7 @@
   padding: 0;
   overflow: hidden;
   margin-top: 0;
+  display: block;
 }
 
 /* Eliminamos el overlay individual del booking - ahora usamos el fondo unificado */
@@ -615,6 +621,14 @@
   position: relative;
 }
 
+/* En móvil, reducir la altura mínima del formulario */
+@media (max-width: 768px) {
+  .form-content {
+    min-height: 200px;
+    margin-bottom: 2rem;
+  }
+}
+
 /* Elementos Decorativos Laterales */
 .side-decorations {
   position: absolute;
@@ -670,6 +684,14 @@
     2px 2px 4px rgba(0, 0, 0, 0.8),
     0 0 8px rgba(255, 255, 255, 0.2);
   font-family: 'Georgia', serif;
+}
+
+/* En móvil, reducir el tamaño del título del step */
+@media (max-width: 768px) {
+  .step-form h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 /* Input Group */
@@ -903,6 +925,14 @@
   margin-bottom: 1.5rem;
 }
 
+/* En móvil, reducir el margen */
+@media (max-width: 768px) {
+  .date-selection,
+  .time-selection {
+    margin-bottom: 1rem;
+  }
+}
+
 .date-label,
 .time-label {
   display: block;
@@ -913,6 +943,15 @@
   text-shadow: 
     1px 1px 2px rgba(0, 0, 0, 0.8),
     0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* En móvil, reducir el margen de las etiquetas */
+@media (max-width: 768px) {
+  .date-label,
+  .time-label {
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* Botones personalizados para fecha y hora */
@@ -936,6 +975,15 @@
   box-shadow: 
     0 4px 15px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* En móvil, reducir el padding de los botones */
+@media (max-width: 768px) {
+  .date-picker-button,
+  .time-picker-button {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
 }
 
 .date-picker-button:hover,
@@ -995,8 +1043,23 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* En móvil, reducir el margen del texto de ayuda */
+@media (max-width: 768px) {
+  .time-help {
+    margin-top: 0.3rem;
+    font-size: 0.75rem;
+  }
+}
+
 .search-slots {
   margin-bottom: 1.5rem;
+}
+
+/* En móvil, reducir el margen del botón de búsqueda */
+@media (max-width: 768px) {
+  .search-slots {
+    margin-bottom: 1rem;
+  }
 }
 
 .search-btn {
@@ -1014,6 +1077,14 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+}
+
+/* En móvil, reducir el padding del botón de búsqueda */
+@media (max-width: 768px) {
+  .search-btn {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
 }
 
 .search-btn:hover:not(:disabled) {
@@ -1130,12 +1201,13 @@
   }
 
   .spiritual-form {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   .form-header h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 600;
+    margin-bottom: 0.5rem;
   }
 
   .form-header p {

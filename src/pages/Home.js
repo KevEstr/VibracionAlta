@@ -149,7 +149,7 @@ const Home = () => {
   };
 
   return (
-    <div className="home">
+    <div className={`home ${showBooking ? 'with-booking' : ''}`}>
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-background">
@@ -268,9 +268,16 @@ const Home = () => {
       </section>
 
       {/* Booking Section - Diseño Espiritual Original */}
-      <AnimatePresence>
-        {showBooking && (
-          <section id="booking-section" className="booking-section">
+      {showBooking && (
+        <AnimatePresence>
+          <motion.section 
+            id="booking-section" 
+            className="booking-section"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.8 }}
+          >
             {/* Elementos Espirituales de Fondo */}
             <div className="spiritual-background-elements">
               <motion.div
@@ -413,13 +420,7 @@ const Home = () => {
             </div>
 
             <div className="booking-container">
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.8 }}
-                className="spiritual-form"
-              >
+              <div className="spiritual-form">
                 {/* Header del Formulario */}
                 <div className="form-header">
                   <h2>Reservar Sesión Espiritual</h2>
@@ -729,11 +730,11 @@ const Home = () => {
                     </button>
                   )}
             </div>
-          </motion.div>
-        </div>
-      </section>
-        )}
-      </AnimatePresence>
+              </div>
+            </div>
+          </motion.section>
+        </AnimatePresence>
+      )}
 
       {/* Componentes Personalizados */}
       <SpiritualCalendar
