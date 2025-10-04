@@ -83,7 +83,7 @@ const Home = () => {
     setError(null);
 
     try {
-      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook-test/api/dias-disponibles', {
+      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook/api/dias-disponibles', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

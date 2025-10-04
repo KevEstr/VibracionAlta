@@ -1,6 +1,7 @@
 // Servicio para conectar con n8n webhook (producción)
 // Usamos el endpoint de días disponibles en producción
-const N8N_WEBHOOK_URL = 'https://vibracionaltacalendario.app.n8n.cloud/webhook-test/api/dias-disponibles';
+const N8N_WEBHOOK_URL = 'https://vibracionaltacalendario.app.n8n.cloud/webhook/api/dias-disponibles';
+const N8N_BOOKING_URL = 'https://vibracionaltacalendario.app.n8n.cloud/webhook/agendar-cita';
 
 class N8nService {
   /**
@@ -224,14 +225,24 @@ class N8nService {
    */
   static async createAppointment(appointmentData) {
     try {
-      // Por ahora simulamos la creación de cita
-      // Si necesitas crear citas, tendrías que crear otro webhook POST en n8n
-      console.log('Creando cita:', appointmentData);
+      const response = await fetch(N8N_BOOKING_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
+
+      const result = await response.json();
       
       return {
         success: true,
         message: 'Cita creada exitosamente',
-        appointmentId: Date.now().toString()
+        data: result
       };
     } catch (error) {
       console.error('Error creando cita en n8n:', error);
