@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Heart, Sparkles, ChevronDown, User, Mail, Phone, Clock, CheckCircle, X } from 'lucide-react';
+import { Calendar, Heart, Sparkles, ChevronDown, User, Mail, Phone, Clock, CheckCircle, X, Search } from 'lucide-react';
 import './Home.css';
+import MyBookings from './MyBookings';
 
 const Home = () => {
   const [showBooking, setShowBooking] = useState(false);
+  const [showMyBookings, setShowMyBookings] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null); // "09:00", "13:30", etc
   const [availableDays, setAvailableDays] = useState([]);
@@ -30,6 +32,14 @@ const Home = () => {
         behavior: 'smooth' 
       });
     }, 100);
+  };
+
+  const handleShowMyBookings = () => {
+    setShowMyBookings(true);
+  };
+
+  const handleBackFromBookings = () => {
+    setShowMyBookings(false);
   };
 
   const steps = [
@@ -225,6 +235,11 @@ const Home = () => {
     });
   };
 
+  // Mostrar MyBookings si está activo
+  if (showMyBookings) {
+    return <MyBookings onBack={handleBackFromBookings} />;
+  }
+
   // Pantalla de éxito
   if (showSuccess && bookingConfirmation) {
     return (
@@ -396,19 +411,33 @@ const Home = () => {
               Conecta con tu esencia divina a través de la Terapia Angelical y Reiki
             </motion.p>
 
-            <motion.button
-              className="reserve-btn"
-              onClick={scrollToBooking}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+            <motion.div 
+              className="hero-buttons"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.7 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
             >
-              <Heart size={24} />
-              <span>Reservar Sesión</span>
-              <Sparkles size={20} />
-            </motion.button>
+              <motion.button
+                className="reserve-btn primary"
+                onClick={scrollToBooking}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Heart size={24} />
+                <span>Reservar Sesión</span>
+                <Sparkles size={20} />
+              </motion.button>
+
+              <motion.button
+                className="reserve-btn secondary"
+                onClick={handleShowMyBookings}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Search size={24} />
+                <span>Consultar Reservas</span>
+              </motion.button>
+            </motion.div>
           </motion.div>
 
           {/* Scroll indicator */}

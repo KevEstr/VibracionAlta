@@ -217,6 +217,15 @@
   text-align: center;
 }
 
+/* Hero Buttons Container */
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 /* Reserve Button - Espiritual y elegante */
 .reserve-btn {
   display: flex;
@@ -238,6 +247,34 @@
   position: relative;
   overflow: hidden;
   font-family: 'Georgia', serif;
+}
+
+/* Primary button (Reservar Sesión) */
+.reserve-btn.primary {
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.3), rgba(90, 140, 128, 0.3));
+  border-color: rgba(147, 112, 219, 0.5);
+}
+
+.reserve-btn.primary:hover {
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.5), rgba(90, 140, 128, 0.5));
+  border-color: rgba(147, 112, 219, 0.7);
+  box-shadow: 
+    0 12px 35px rgba(147, 112, 219, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+/* Secondary button (Consultar Reservas) */
+.reserve-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.reserve-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 12px 35px rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
 .reserve-btn::before {
@@ -1340,11 +1377,20 @@
     margin-bottom: 2rem; /* Más espacio */
   }
 
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+
   .reserve-btn {
     padding: 1.2rem 2.5rem; /* Más grande en móviles */
     font-size: 1.1rem;
     gap: 0.8rem;
-    margin-top: 1rem; /* Más espacio superior */
+    margin-top: 0;
+    width: 100%;
+    max-width: 350px;
+    justify-content: center;
   }
 
   .element {
@@ -1455,10 +1501,13 @@
     margin-bottom: 2.5rem;
   }
 
+  .hero-buttons {
+    gap: 1.5rem;
+  }
+
   .reserve-btn {
     padding: 1.4rem 3rem; /* Más grande en pantallas grandes */
     font-size: 1.2rem;
-    margin-top: 1.5rem;
   }
 
   .element {
@@ -1497,10 +1546,15 @@
     font-size: 1.1rem; /* Ajustado para móviles pequeños */
   }
 
+  .hero-buttons {
+    gap: 0.75rem;
+  }
+
   .reserve-btn {
     padding: 1rem 2rem; /* Ajustado para móviles pequeños */
     font-size: 1rem;
     gap: 0.6rem;
+    max-width: 100%;
   }
 
   .element {
