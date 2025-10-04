@@ -1,29 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Heart, Sparkles, ChevronDown, User, Mail, Phone, Clock, CheckCircle, ArrowLeft, RefreshCw } from 'lucide-react';
-import N8nService from '../services/n8nService';
-import SpiritualCalendar from '../components/SpiritualCalendar';
-import SpiritualTimePicker from '../components/SpiritualTimePicker';
+import { Calendar, Heart, Sparkles, ChevronDown, User, Mail, Phone, Clock, CheckCircle, X } from 'lucide-react';
 import './Home.css';
 
 const Home = () => {
   const [showBooking, setShowBooking] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState('');
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [loadingSlots, setLoadingSlots] = useState(false);
-  const [slotsError, setSlotsError] = useState(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null); // "09:00", "13:30", etc
+  const [availableDays, setAvailableDays] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [loadingDays, setLoadingDays] = useState(false);
+  const [error, setError] = useState(null);
+  const [showAllDays, setShowAllDays] = useState(false); // Para mostrar/ocultar días
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     date: '',
-    time: ''
+    time: '',
+    motivo: '',
+    primeraConsulta: null,
+    yaPago: null
   });
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const scrollToBooking = () => {
     setShowBooking(true);
@@ -35,90 +33,105 @@ const Home = () => {
   };
 
   const steps = [
-    { id: 'schedule', title: 'Fecha y Hora', icon: Clock },
-    { id: 'slots', title: 'Horarios', icon: Calendar },
+    { id: 'schedule', title: 'Seleccionar Horario', icon: Clock },
     { id: 'personal', title: 'Información Personal', icon: User },
     { id: 'confirm', title: 'Confirmación', icon: CheckCircle }
+  ];
+
+  // Horarios disponibles fijos
+  const timeSlots = [
+    { value: "09:00", label: "9:00 AM" },
+    { value: "13:30", label: "1:30 PM" },
+    { value: "15:30", label: "3:30 PM" },
+    { value: "17:30", label: "5:30 PM" }
   ];
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Funciones para el calendario personalizado
-  const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    setFormData(prev => ({ ...prev, date: date.toISOString().split('T')[0] }));
+  // Mapeo de días en inglés a español
+  const diasEspanol = {
+    'Monday': 'Lunes',
+    'Tuesday': 'Martes',
+    'Wednesday': 'Miércoles',
+    'Thursday': 'Jueves',
+    'Friday': 'Viernes',
+    'Saturday': 'Sábado',
+    'Sunday': 'Domingo'
   };
 
-  const handleTimeSelect = (time) => {
-    setSelectedTime(time);
-    setFormData(prev => ({ ...prev, time }));
+  // Función para convertir hora 24h a 12h con AM/PM
+  const formatearHora12h = (hora24) => {
+    const [horas, minutos] = hora24.split(':');
+    const h = parseInt(horas);
+    const m = minutos;
+    
+    if (h === 0) return `12:${m} AM`;
+    if (h < 12) return `${h}:${m} AM`;
+    if (h === 12) return `12:${m} PM`;
+    return `${h - 12}:${m} PM`;
   };
 
-  const openCalendar = () => {
-    setShowCalendar(true);
-  };
-
-  const openTimePicker = () => {
-    setShowTimePicker(true);
-  };
-
-  // Función para cargar slots disponibles
-  const loadAvailableSlots = async () => {
-    if (!selectedDate) return;
-
-    setLoadingSlots(true);
-    setSlotsError(null);
-    setAvailableSlots([]);
-    setSelectedSlot(null);
+  // Función para consultar días disponibles para una hora específica
+  const handleTimeSlotSelect = async (timeValue) => {
+    setSelectedTimeSlot(timeValue);
+    setSelectedDay(null);
+    setAvailableDays([]);
+    setShowAllDays(false); // Reset al seleccionar nueva hora
+    setLoadingDays(true);
+    setError(null);
 
     try {
-      const requestData = {
-        fecha: selectedDate.toISOString().split('T')[0],
-        hora: selectedTime || null
-      };
+      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook-test/api/dias-disponibles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ hora: timeValue })
+      });
 
-      console.log('Consultando slots con:', requestData);
-      const slots = await N8nService.getAvailableSlotsWithParams(requestData.fecha, requestData.hora);
-      setAvailableSlots(slots);
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
 
-    } catch (err) {
-      console.error('Error cargando slots:', err);
-      setSlotsError('Error al cargar los horarios disponibles. Inténtalo de nuevo.');
+      const data = await response.json();
+      
+      if (data.success && data.dias && Array.isArray(data.dias)) {
+        // Traducir días al español
+        const diasTraducidos = data.dias.map(dia => ({
+          ...dia,
+          diaSemanaOriginal: dia.diaSemana,
+          diaSemana: diasEspanol[dia.diaSemana] || dia.diaSemana
+        }));
+        setAvailableDays(diasTraducidos);
+      } else {
+        throw new Error('Formato de respuesta inválido');
+      }
+    } catch (error) {
+      console.error('Error obteniendo días disponibles:', error);
+      setError('No se pudieron cargar los días disponibles. Por favor intenta nuevamente.');
+      setAvailableDays([]);
     } finally {
-      setLoadingSlots(false);
+      setLoadingDays(false);
     }
   };
 
-  // Removemos la carga automática de slots
-  // Los slots se cargarán solo cuando el usuario haga clic en "Continuar"
-
-  // Función para manejar la selección de un slot
-  const handleSlotSelect = (slot) => {
-    setSelectedSlot(slot);
+  // Función para seleccionar un día específico
+  const handleDaySelect = (day) => {
+    setSelectedDay(day);
     setFormData(prev => ({
       ...prev,
-      date: slot.day,
-      time: slot.time
+      date: day.fecha,
+      time: selectedTimeSlot
     }));
   };
 
   const nextStep = () => {
-    // Validar que se haya seleccionado fecha en el primer paso
+    // Validar que se haya seleccionado día y hora en el primer paso
     if (currentStep === 0) {
-      if (!selectedDate) {
-        alert('Por favor selecciona una fecha');
-        return;
-      }
-      // Cargar slots cuando se avance del paso 1 al paso 2
-      loadAvailableSlots();
-    }
-    
-    // Validar que se haya seleccionado un slot en el segundo paso (horarios)
-    if (currentStep === 1) {
-      if (!selectedSlot) {
-        alert('Por favor selecciona un horario disponible');
+      if (!selectedDay || !selectedTimeSlot) {
+        alert('Por favor selecciona una hora y una fecha disponible');
         return;
       }
     }
@@ -134,9 +147,73 @@ const Home = () => {
     }
   };
 
-  const submitForm = () => {
-    console.log('Formulario enviado:', formData);
-    // Aquí iría la lógica de envío
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [bookingConfirmation, setBookingConfirmation] = useState(null);
+
+  const submitForm = async () => {
+    // Validar campos requeridos
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert('Por favor completa todos los campos requeridos');
+      return;
+    }
+
+    if (!selectedDay || !selectedTimeSlot) {
+      alert('Error: No se ha seleccionado fecha y hora');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Preparar datos para enviar a n8n
+      const dataToSend = {
+        nombre: formData.name,
+        email: formData.email,
+        celular: formData.phone,
+        motivo: formData.motivo || 'No especificado',
+        esPrimeraVez: formData.primeraConsulta === true ? 'Sí' : formData.primeraConsulta === false ? 'No' : 'No especificado',
+        fechaHoraISO: selectedDay.fechaHoraISO
+      };
+
+      console.log('Enviando datos a n8n:', dataToSend);
+
+      // Enviar a n8n (producción)
+      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook/agendar-cita', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Respuesta de n8n:', result);
+
+      // Guardar datos para mostrar en confirmación
+      setBookingConfirmation({
+        nombre: formData.name,
+        email: formData.email,
+        fecha: selectedDay.fechaLegible,
+        diaSemana: selectedDay.diaSemana,
+        hora: formatearHora12h(selectedTimeSlot),
+        motivo: formData.motivo || 'No especificado',
+        esPrimeraVez: formData.primeraConsulta === true ? 'Sí' : 'No'
+      });
+
+      // Mostrar pantalla de éxito
+      setShowSuccess(true);
+
+    } catch (error) {
+      console.error('Error al agendar cita:', error);
+      alert('Hubo un error al agendar tu cita. Por favor intenta nuevamente o contacta con soporte.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -147,6 +224,137 @@ const Home = () => {
       day: 'numeric'
     });
   };
+
+  // Pantalla de éxito
+  if (showSuccess && bookingConfirmation) {
+    return (
+      <div className="home">
+        <motion.section 
+          className="success-screen"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="success-wrapper">
+            <div className="success-header">
+              <motion.div
+                className="success-icon-wrapper"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <CheckCircle size={40} className="success-icon" />
+              </motion.div>
+
+              <motion.h2
+                className="success-title"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                ¡Solicitud de Cita Enviada!
+              </motion.h2>
+
+              <motion.p
+                className="success-message"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                Gracias por enviar una solicitud para una cita. Se enviará una confirmación de esta solicitud a tu correo. 
+                Te responderemos en breve con la confirmación definitiva de la cita.
+              </motion.p>
+            </div>
+
+            <motion.div
+              className="booking-summary"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <h3>Resumen de la Reserva:</h3>
+              <div className="summary-grid">
+                <div className="summary-item">
+                  <div className="summary-icon">
+                    <User size={18} />
+                  </div>
+                  <div className="summary-content">
+                    <span className="summary-label">Nombre</span>
+                    <span className="summary-value">{bookingConfirmation.nombre}</span>
+                  </div>
+                </div>
+                
+                <div className="summary-item">
+                  <div className="summary-icon">
+                    <Calendar size={18} />
+                  </div>
+                  <div className="summary-content">
+                    <span className="summary-label">Fecha y Hora</span>
+                    <span className="summary-value">
+                      {bookingConfirmation.diaSemana}, {bookingConfirmation.fecha} @ {bookingConfirmation.hora}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="summary-item">
+                  <div className="summary-icon">
+                    <Mail size={18} />
+                  </div>
+                  <div className="summary-content">
+                    <span className="summary-label">Email</span>
+                    <span className="summary-value">{bookingConfirmation.email}</span>
+                  </div>
+                </div>
+                
+                {bookingConfirmation.motivo && bookingConfirmation.motivo !== 'No especificado' && (
+                  <div className="summary-item">
+                    <div className="summary-icon">
+                      <Sparkles size={18} />
+                    </div>
+                    <div className="summary-content">
+                      <span className="summary-label">Motivo</span>
+                      <span className="summary-value">{bookingConfirmation.motivo}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <motion.button
+                className="back-home-btn"
+                onClick={() => {
+                  setShowSuccess(false);
+                  setShowBooking(false);
+                  setCurrentStep(0);
+                  setSelectedDay(null);
+                  setSelectedTimeSlot(null);
+                  setAvailableDays([]);
+                  setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    date: '',
+                    time: '',
+                    motivo: '',
+                    primeraConsulta: null,
+                    yaPago: null
+                  });
+                  setBookingConfirmation(null);
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Heart size={20} />
+                Volver al Inicio
+              </motion.button>
+            </motion.div>
+          </div>
+        </motion.section>
+      </div>
+    );
+  }
 
   return (
     <div className={`home ${showBooking ? 'with-booking' : ''}`}>
@@ -490,136 +698,114 @@ const Home = () => {
                           <div className="spiritual-symbol">∞</div>
                         </motion.div>
                       </div>
-                      {/* Step 1: Fecha y Hora */}
+                      {/* Step 1: Seleccionar Hora y Día */}
                       {currentStep === 0 && (
                         <div className="step-form">
-                          <h3>Elige tu momento perfecto</h3>
+                          <h3>Tenemos estas horas disponibles para que puedas reservar con nosotros:</h3>
                           
-                          {/* Selección de fecha */}
-                          <div className="date-selection">
-                            <label className="date-label">Selecciona la Fecha *</label>
-                            <button
-                              type="button"
-                              className="date-picker-button"
-                              onClick={openCalendar}
-                            >
-                              <Calendar size={20} />
-                              <span>
-                                {selectedDate 
-                                  ? selectedDate.toLocaleDateString('es-ES', {
-                                      weekday: 'long',
-                                      year: 'numeric',
-                                      month: 'long',
-                                      day: 'numeric'
-                                    })
-                                  : 'Seleccionar fecha'
-                                }
-                              </span>
-                            </button>
-                          </div>
-
-                          {/* Hora preferida (opcional) */}
+                          {/* Selección de hora */}
                           <div className="time-selection">
-                            <label className="time-label">Hora Preferida (Opcional)</label>
-                            <button
-                              type="button"
-                              className="time-picker-button"
-                              onClick={openTimePicker}
-                            >
-                              <Clock size={20} />
-                              <span>
-                                {selectedTime 
-                                  ? selectedTime 
-                                  : 'Seleccionar hora'
-                                }
-                              </span>
-                            </button>
-                            <small className="time-help">
-                              Si no especificas hora, verás todos los horarios disponibles del día
-                            </small>
-                          </div>
-                        </div>
-                      )}
 
-                      {/* Step 2: Horarios */}
-                      {currentStep === 1 && (
-                        <div className="step-form">
-                          <h3>Selecciona tu horario</h3>
-                          
-                          {/* Mostrar slots disponibles */}
-                          <div className="slots-section">
-                            <div className="slots-header">
-                              <h4>Horarios Disponibles</h4>
-                              <button
-                                type="button"
-                                className="refresh-slots-btn"
-                                onClick={loadAvailableSlots}
-                                disabled={loadingSlots}
-                              >
-                                <RefreshCw size={16} className={loadingSlots ? 'spinning' : ''} />
-                                Actualizar
-                              </button>
-                            </div>
-
-                            {loadingSlots ? (
-                              <div className="slots-loading">
-                                <div className="spinner"></div>
-                                <p>Cargando horarios disponibles...</p>
-                              </div>
-                            ) : slotsError ? (
-                              <div className="slots-error">
-                                <p>{slotsError}</p>
+                            <div className="time-slots-grid">
+                              {timeSlots.map((slot) => (
                                 <button
+                                  key={slot.value}
                                   type="button"
-                                  className="retry-btn"
-                                  onClick={loadAvailableSlots}
+                                  className={`time-slot-button ${selectedTimeSlot === slot.value ? 'selected' : ''}`}
+                                  onClick={() => handleTimeSlotSelect(slot.value)}
                                 >
-                                  Reintentar
+                                  <Clock size={18} />
+                                  <span>{slot.label}</span>
                                 </button>
-                              </div>
-                            ) : availableSlots.length === 0 ? (
-                              <div className="no-slots">
-                                <Calendar size={32} />
-                                <p>No hay horarios disponibles para esta fecha</p>
-                              </div>
-                            ) : (
-                              <div className="slots-grid">
-                                {availableSlots.map((slot, index) => (
-                                  <motion.div
-                                    key={`${slot.day}-${slot.time}`}
-                                    className={`slot-card ${selectedSlot?.time === slot.time ? 'selected' : ''}`}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.2, delay: index * 0.05 }}
-                                    whileHover={{ scale: 1.05, y: -2 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => handleSlotSelect(slot)}
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Mostrar loading mientras carga los días */}
+                          {loadingDays && (
+                            <motion.div
+                              className="loading-days"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <div className="spinner"></div>
+                              <p>Cargando días disponibles...</p>
+                            </motion.div>
+                          )}
+
+                          {/* Mostrar error si hay */}
+                          {error && (
+                            <motion.div
+                              className="error-message-box"
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <p>{error}</p>
+                            </motion.div>
+                          )}
+
+                          {/* Mostrar días disponibles */}
+                          {!loadingDays && availableDays.length > 0 && (
+                            <motion.div
+                              className="available-days-section"
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.4 }}
+                            >
+                              <label className="days-label">
+                                Días Disponibles ({availableDays.length}) *
+                              </label>
+                              <div className="days-grid">
+                                {(showAllDays ? availableDays : availableDays.slice(0, 6)).map((day, index) => (
+                                  <button
+                                    key={index}
+                                    type="button"
+                                    className={`day-button ${selectedDay?.fecha === day.fecha ? 'selected' : ''}`}
+                                    onClick={() => handleDaySelect(day)}
                                   >
-                                    <div className="slot-time">
-                                      <Clock size={16} />
-                                      {slot.time}
+                                    <div className="day-header">
+                                      <Calendar size={16} />
+                                      <span className="day-weekday">{day.diaSemana}</span>
                                     </div>
-                                    <div className="slot-duration">
-                                      {slot.duration} min
+                                    <div className="day-date">{day.fechaLegible}</div>
+                                    <div className="day-time">
+                                      <Clock size={14} />
+                                      <span>{formatearHora12h(selectedTimeSlot)}</span>
                                     </div>
-                                    <div className="slot-status">
-                                      {selectedSlot?.time === slot.time ? (
-                                        <>
-                                          <CheckCircle size={14} />
-                                          Seleccionado
-                                        </>
-                                      ) : (
-                                        'Disponible'
-                                      )}
-                                    </div>
-                                  </motion.div>
+                                  </button>
                                 ))}
                               </div>
-                            )}
-                          </div>
+                              
+                              {/* Botón para mostrar más días */}
+                              {availableDays.length > 6 && (
+                                <motion.button
+                                  type="button"
+                                  className="show-more-days-btn"
+                                  onClick={() => setShowAllDays(!showAllDays)}
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.3 }}
+                                >
+                                  {showAllDays ? (
+                                    <>
+                                      Mostrar menos días
+                                      <ChevronDown size={18} style={{ transform: 'rotate(180deg)' }} />
+                                    </>
+                                  ) : (
+                                    <>
+                                      Mostrar más días ({availableDays.length - 6} más)
+                                      <ChevronDown size={18} />
+                                    </>
+                                  )}
+                                </motion.button>
+                              )}
+                            </motion.div>
+                          )}
 
-                          {/* Mostrar slot seleccionado */}
-                          {selectedSlot && (
+                          {/* Mostrar selección final */}
+                          {selectedDay && selectedTimeSlot && (
                             <motion.div
                               className="selected-slot-display"
                               initial={{ opacity: 0, y: 20 }}
@@ -627,15 +813,15 @@ const Home = () => {
                               transition={{ duration: 0.3 }}
                             >
                               <div className="slot-info">
-                                <h4>Horario Seleccionado:</h4>
+                                <h4>✨ Horario Seleccionado:</h4>
                                 <div className="slot-details">
                                   <div className="slot-detail">
                                     <Calendar size={16} />
-                                    <span>{formatDate(selectedSlot.day)}</span>
+                                    <span>{selectedDay.fechaLegible} - {selectedDay.diaSemana}</span>
                                   </div>
                                   <div className="slot-detail">
                                     <Clock size={16} />
-                                    <span>{selectedSlot.time} ({selectedSlot.duration} min)</span>
+                                    <span>{formatearHora12h(selectedTimeSlot)}</span>
                                   </div>
                                 </div>
                               </div>
@@ -644,8 +830,8 @@ const Home = () => {
                         </div>
                       )}
 
-                      {/* Step 3: Información Personal */}
-                      {currentStep === 2 && (
+                      {/* Step 2: Información Personal */}
+                      {currentStep === 1 && (
                         <div className="step-form">
                           <h3>Tu Información</h3>
                           <div className="input-group">
@@ -676,12 +862,72 @@ const Home = () => {
                                 onChange={(e) => handleInputChange('phone', e.target.value)}
                               />
                             </div>
+
+                            {/* Campo de Motivo */}
+                            <div className="input-field textarea-field">
+                              <Sparkles size={20} />
+                              <textarea
+                                placeholder="Motivo de tu consulta..."
+                                value={formData.motivo}
+                                onChange={(e) => handleInputChange('motivo', e.target.value)}
+                                rows={4}
+                              />
+                            </div>
+
+                            {/* Preguntas Sí/No */}
+                            <div className="yes-no-questions">
+                              {/* ¿Es tu primera consulta? */}
+                              <div className="question-group">
+                                <label className="question-label">¿Es tu primera consulta?</label>
+                                <div className="yes-no-buttons">
+                                  <button
+                                    type="button"
+                                    className={`yes-no-btn ${formData.primeraConsulta === true ? 'selected yes' : ''}`}
+                                    onClick={() => handleInputChange('primeraConsulta', true)}
+                                  >
+                                    <CheckCircle size={18} />
+                                    Sí
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={`yes-no-btn ${formData.primeraConsulta === false ? 'selected no' : ''}`}
+                                    onClick={() => handleInputChange('primeraConsulta', false)}
+                                  >
+                                    <X size={18} />
+                                    No
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* ¿Ya pagaste la consulta? */}
+                              <div className="question-group">
+                                <label className="question-label">¿Ya pagaste la consulta?</label>
+                                <div className="yes-no-buttons">
+                                  <button
+                                    type="button"
+                                    className={`yes-no-btn ${formData.yaPago === true ? 'selected yes' : ''}`}
+                                    onClick={() => handleInputChange('yaPago', true)}
+                                  >
+                                    <CheckCircle size={18} />
+                                    Sí
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={`yes-no-btn ${formData.yaPago === false ? 'selected no' : ''}`}
+                                    onClick={() => handleInputChange('yaPago', false)}
+                                  >
+                                    <X size={18} />
+                                    No
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       )}
 
-                      {/* Step 4: Confirmación */}
-                      {currentStep === 3 && (
+                      {/* Step 3: Confirmación */}
+                      {currentStep === 2 && (
                         <div className="step-form">
                           <h3>Confirma tu sesión</h3>
                           <div className="confirmation-details">
@@ -699,11 +945,33 @@ const Home = () => {
                             </div>
                             <div className="detail-item">
                               <span>Fecha:</span>
-                              <span>{formData.date}</span>
+                              <span>{selectedDay?.fechaLegible}</span>
+                            </div>
+                            <div className="detail-item">
+                              <span>Día:</span>
+                              <span>{selectedDay?.diaSemana}</span>
                             </div>
                             <div className="detail-item">
                               <span>Hora:</span>
-                              <span>{formData.time}</span>
+                              <span>{formatearHora12h(selectedTimeSlot)}</span>
+                            </div>
+                            {formData.motivo && (
+                              <div className="detail-item full-width">
+                                <span>Motivo:</span>
+                                <span>{formData.motivo}</span>
+                              </div>
+                            )}
+                            <div className="detail-item">
+                              <span>Primera consulta:</span>
+                              <span className={`badge ${formData.primeraConsulta ? 'badge-yes' : 'badge-no'}`}>
+                                {formData.primeraConsulta === true ? 'Sí' : formData.primeraConsulta === false ? 'No' : 'No especificado'}
+                              </span>
+                            </div>
+                            <div className="detail-item">
+                              <span>Ya pagó:</span>
+                              <span className={`badge ${formData.yaPago ? 'badge-yes' : 'badge-no'}`}>
+                                {formData.yaPago === true ? 'Sí' : formData.yaPago === false ? 'No' : 'No especificado'}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -713,7 +981,7 @@ const Home = () => {
                 </div>
 
                 {/* Navigation Buttons */}
-                <div className="form-navigation">
+                <div className={`form-navigation ${currentStep === 0 ? 'centered' : ''}`}>
                   {currentStep > 0 && (
                     <button className="nav-btn prev-btn" onClick={prevStep}>
                       Anterior
@@ -724,9 +992,22 @@ const Home = () => {
                       Siguiente
                     </button>
                   ) : (
-                    <button className="nav-btn submit-btn" onClick={submitForm}>
-                      <Heart size={20} />
-                      Reservar Sesión
+                    <button 
+                      className={`nav-btn submit-btn ${isSubmitting ? 'loading' : ''}`}
+                      onClick={submitForm}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="spinner"></div>
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <Heart size={20} />
+                          Reservar Sesión
+                        </>
+                      )}
                     </button>
                   )}
             </div>
@@ -736,21 +1017,6 @@ const Home = () => {
         </AnimatePresence>
       )}
 
-      {/* Componentes Personalizados */}
-      <SpiritualCalendar
-        selectedDate={selectedDate}
-        onDateSelect={handleDateSelect}
-        isOpen={showCalendar}
-        onClose={() => setShowCalendar(false)}
-        minDate={new Date()}
-      />
-
-      <SpiritualTimePicker
-        selectedTime={selectedTime}
-        onTimeSelect={handleTimeSelect}
-        isOpen={showTimePicker}
-        onClose={() => setShowTimePicker(false)}
-      />
     </div>
   );
 };

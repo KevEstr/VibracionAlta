@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, User, Mail, Phone, Upload, CheckCircle, AlertCircle, X, Sparkles, MapPin } from 'lucide-react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import SlotSelector from '../components/SlotSelector';
 import './BookingForm.css';
 
 const BookingForm = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState('');
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [showSlotSelector, setShowSlotSelector] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null); // "09:00", "13:30", etc
+  const [availableDays, setAvailableDays] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [isLoadingDays, setIsLoadingDays] = useState(false);
   const [paymentProof, setPaymentProof] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   const {
     register,
@@ -26,51 +24,73 @@ const BookingForm = () => {
 
   const paymentRequired = watch('paymentRequired', false);
 
-  // Función para manejar la búsqueda de slots
-  const handleSearchSlots = () => {
-    if (selectedDate) {
-      setShowSlotSelector(true);
+  // Horarios disponibles fijos
+  const timeSlots = [
+    { value: "09:00", label: "9:00 AM" },
+    { value: "13:30", label: "1:30 PM" },
+    { value: "15:30", label: "3:30 PM" },
+    { value: "17:30", label: "5:30 PM" }
+  ];
+
+  // Función para consultar días disponibles para una hora específica
+  const handleTimeSlotSelect = async (timeValue) => {
+    setSelectedTimeSlot(timeValue);
+    setSelectedDay(null);
+    setAvailableDays([]);
+    setIsLoadingDays(true);
+    setError(null);
+
+    try {
+      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook-test/api/dias-disponibles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ hora: timeValue })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.dias && Array.isArray(data.dias)) {
+        setAvailableDays(data.dias);
+      } else {
+        throw new Error('Formato de respuesta inválido');
+      }
+    } catch (error) {
+      console.error('Error obteniendo días disponibles:', error);
+      setError('No se pudieron cargar los días disponibles. Por favor intenta nuevamente.');
+      setAvailableDays([]);
+    } finally {
+      setIsLoadingDays(false);
     }
   };
 
-  // Función para manejar la selección de un slot
-  const handleSlotSelect = (slot) => {
-    setSelectedSlot(slot);
+  // Función para seleccionar un día específico
+  const handleDaySelect = (day) => {
+    setSelectedDay(day);
   };
-
-  // Función para continuar con el slot seleccionado
-  const handleSlotContinue = (slot) => {
-    setSelectedSlot(slot);
-    setShowSlotSelector(false);
-  };
-
-  // Función para volver del selector de slots
-  const handleSlotBack = () => {
-    setShowSlotSelector(false);
-    setSelectedSlot(null);
-  };
-
-  // Fechas no disponibles (esto se conectaría con Google Calendar)
-  const unavailableDates = [
-    new Date(2024, 2, 20), // 20 de marzo
-    new Date(2024, 2, 25), // 25 de marzo
-  ];
 
   const onSubmit = async (data) => {
-    if (!selectedSlot) {
-      alert('Por favor selecciona un horario disponible');
+    if (!selectedDay) {
+      alert('Por favor selecciona una fecha y hora disponible');
       return;
     }
 
     setIsSubmitting(true);
     
-    // Simular envío a N8N
+    // Enviar a N8N
     try {
       const formData = {
         ...data,
-        selectedDate: selectedSlot.day,
-        selectedTime: selectedSlot.time,
-        slotDuration: selectedSlot.duration,
+        fecha: selectedDay.fecha,
+        hora: selectedTimeSlot,
+        fechaHoraISO: selectedDay.fechaHoraISO,
+        fechaLegible: selectedDay.fechaLegible,
+        diaSemana: selectedDay.diaSemana,
         paymentProof: paymentProof ? paymentProof.name : null,
         timestamp: new Date().toISOString()
       };
@@ -82,12 +102,13 @@ const BookingForm = () => {
       
       setShowSuccess(true);
       reset();
-      setSelectedDate(null);
-      setSelectedTime('');
-      setSelectedSlot(null);
+      setSelectedTimeSlot(null);
+      setSelectedDay(null);
+      setAvailableDays([]);
       setPaymentProof(null);
     } catch (error) {
       console.error('Error al enviar formulario:', error);
+      alert('Hubo un error al reservar tu cita. Por favor intenta nuevamente.');
     } finally {
       setIsSubmitting(false);
     }
@@ -102,19 +123,6 @@ const BookingForm = () => {
 
   const removeFile = () => {
     setPaymentProof(null);
-  };
-
-  const isDateDisabled = (date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    // No permitir fechas pasadas
-    if (date < today) return true;
-    
-    // No permitir fechas no disponibles
-    return unavailableDates.some(unavailableDate => 
-      date.getTime() === unavailableDate.getTime()
-    );
   };
 
   if (showSuccess) {
@@ -144,23 +152,6 @@ const BookingForm = () => {
           </div>
         </div>
       </motion.div>
-    );
-  }
-
-  // Si se está mostrando el selector de slots
-  if (showSlotSelector) {
-    return (
-      <div className="booking-form-page">
-        <div className="container">
-          <SlotSelector
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            onSlotSelect={handleSlotSelect}
-            onBack={handleSlotBack}
-            onContinue={handleSlotContinue}
-          />
-        </div>
-      </div>
     );
   }
 
@@ -263,65 +254,93 @@ const BookingForm = () => {
                 </div>
               </div>
 
-              {/* Selección de Fecha y Hora */}
+              {/* Selección de Hora y Fecha */}
               <div className="form-section">
                 <h3>
-                  <Calendar size={20} />
-                  Fecha y Hora
+                  <Clock size={20} />
+                  Elige tu momento perfecto
                 </h3>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Selecciona la Fecha *</label>
-                    <DatePicker
-                      selected={selectedDate}
-                      onChange={(date) => setSelectedDate(date)}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Selecciona una fecha"
-                      className={`form-control ${!selectedDate ? 'error' : ''}`}
-                      filterDate={isDateDisabled}
-                      minDate={new Date()}
-                      showPopperArrow={false}
-                      calendarClassName="custom-calendar"
-                    />
-                    {!selectedDate && (
-                      <div className="error-message">
-                        <AlertCircle size={16} />
-                        Selecciona una fecha
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Hora Preferida (Opcional)</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      value={selectedTime}
-                      onChange={(e) => setSelectedTime(e.target.value)}
-                      placeholder="HH:MM"
-                    />
-                    <small className="form-help">
-                      Si no especificas hora, verás todos los horarios disponibles del día
-                    </small>
-                  </div>
-                </div>
-
-                {/* Botón para buscar horarios */}
+                {/* Selección de Hora */}
                 <div className="form-group">
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-lg"
-                    onClick={handleSearchSlots}
-                    disabled={!selectedDate}
-                  >
-                    <Calendar size={20} />
-                    Buscar Horarios Disponibles
-                  </button>
+                  <label className="form-label">Selecciona la Hora *</label>
+                  <div className="time-slots-grid">
+                    {timeSlots.map((slot) => (
+                      <button
+                        key={slot.value}
+                        type="button"
+                        className={`time-slot-button ${selectedTimeSlot === slot.value ? 'selected' : ''}`}
+                        onClick={() => handleTimeSlotSelect(slot.value)}
+                      >
+                        <Clock size={18} />
+                        <span>{slot.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Mostrar slot seleccionado */}
-                {selectedSlot && (
+                {/* Mostrar loading mientras carga los días */}
+                {isLoadingDays && (
+                  <motion.div
+                    className="loading-days"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="spinner"></div>
+                    <p>Cargando días disponibles...</p>
+                  </motion.div>
+                )}
+
+                {/* Mostrar error si hay */}
+                {error && (
+                  <motion.div
+                    className="error-message-box"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <AlertCircle size={20} />
+                    <p>{error}</p>
+                  </motion.div>
+                )}
+
+                {/* Mostrar días disponibles */}
+                {!isLoadingDays && availableDays.length > 0 && (
+                  <motion.div
+                    className="available-days-section"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <label className="form-label">
+                      Días Disponibles ({availableDays.length}) *
+                    </label>
+                    <div className="days-grid">
+                      {availableDays.map((day, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          className={`day-button ${selectedDay?.fecha === day.fecha ? 'selected' : ''}`}
+                          onClick={() => handleDaySelect(day)}
+                        >
+                          <div className="day-header">
+                            <Calendar size={16} />
+                            <span className="day-weekday">{day.diaSemana}</span>
+                          </div>
+                          <div className="day-date">{day.fechaLegible}</div>
+                          <div className="day-time">
+                            <Clock size={14} />
+                            <span>{selectedTimeSlot}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Mostrar selección final */}
+                {selectedDay && selectedTimeSlot && (
                   <motion.div
                     className="selected-slot-display"
                     initial={{ opacity: 0, y: 20 }}
@@ -329,33 +348,18 @@ const BookingForm = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <div className="slot-info">
-                      <h4>Horario Seleccionado:</h4>
+                      <h4>✨ Horario Seleccionado:</h4>
                       <div className="slot-details">
                         <div className="slot-detail">
                           <Calendar size={16} />
-                          <span>{new Date(selectedSlot.day).toLocaleDateString('es-ES', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}</span>
+                          <span>{selectedDay.fechaLegible} - {selectedDay.diaSemana}</span>
                         </div>
                         <div className="slot-detail">
                           <Clock size={16} />
-                          <span>{selectedSlot.time} ({selectedSlot.duration} min)</span>
+                          <span>{timeSlots.find(s => s.value === selectedTimeSlot)?.label}</span>
                         </div>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className="btn btn-outline"
-                      onClick={() => {
-                        setSelectedSlot(null);
-                        setShowSlotSelector(true);
-                      }}
-                    >
-                      Cambiar Horario
-                    </button>
                   </motion.div>
                 )}
               </div>

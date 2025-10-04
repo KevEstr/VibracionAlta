@@ -1,5 +1,6 @@
-// Servicio para conectar con n8n webhook
-const N8N_WEBHOOK_URL = 'https://vibracionaltacalendar.app.n8n.cloud/webhook/ab708bcb-c9e5-456c-9485-c89ad238863b';
+// Servicio para conectar con n8n webhook (producción)
+// Usamos el endpoint de días disponibles en producción
+const N8N_WEBHOOK_URL = 'https://vibracionaltacalendario.app.n8n.cloud/webhook-test/api/dias-disponibles';
 
 class N8nService {
   /**
