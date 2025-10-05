@@ -14,7 +14,7 @@ const Home = () => {
   const [loadingDays, setLoadingDays] = useState(false);
   const [error, setError] = useState(null);
   const [showAllDays, setShowAllDays] = useState(false); // Para mostrar/ocultar días
-
+  const [selectedDayFilter, setSelectedDayFilter] = useState('todos'); // Filtro por día de la semana
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -167,7 +167,13 @@ const Home = () => {
     { key: 'Sábado', label: 'Sábado', emoji: '📌' }
   ];
 
-
+  // Función para filtrar días según el día de la semana seleccionado
+  const getFilteredDays = () => {
+    if (selectedDayFilter === 'todos') {
+      return availableDays;
+    }
+    return availableDays.filter(day => day.diaSemana === selectedDayFilter);
+  };
 
   // Función para convertir hora 24h a 12h con AM/PM
   const formatearHora12h = (hora24) => {
@@ -895,6 +901,31 @@ const Home = () => {
                             </motion.div>
                           )}
 
+                          {/* 🔍 DEBUG: Panel de información */}
+                          {!loadingDays && availableDays.length > 0 && (
+                            <div style={{
+                              background: 'rgba(255, 255, 0, 0.15)',
+                              border: '2px solid rgba(255, 255, 0, 0.5)',
+                              borderRadius: '10px',
+                              padding: '1rem',
+                              marginBottom: '1rem',
+                              color: 'white',
+                              fontSize: '0.9rem'
+                            }}>
+                              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                                🔍 DEBUG - Información de n8n:
+                              </div>
+                              <div>• Hora seleccionada en frontend: <strong>{selectedTimeSlot}</strong></div>
+                              <div>• Total días recibidos de n8n: <strong>{availableDays.length}</strong></div>
+                              <div>• Primeros 3 días con sus horas:</div>
+                              {availableDays.slice(0, 3).map((d, i) => (
+                                <div key={i} style={{ marginLeft: '1rem', fontSize: '0.85rem' }}>
+                                  └ {d.fechaLegible} ({d.diaSemana}) - <strong>Hora: {d.hora}</strong>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
                           {/* Mostrar días disponibles */}
                           {!loadingDays && availableDays.length > 0 && (
                             <motion.div
@@ -905,12 +936,48 @@ const Home = () => {
                             >
                               <div className="days-header">
                                 <label className="days-label">
-                                  Días Disponibles ({availableDays.length}) *
+                                  Días Disponibles ({getFilteredDays().length}) *
                                 </label>
                               </div>
 
+                              {/* Filtro desplegable por día de la semana */}
+                              <motion.div 
+                                className="day-filter-container"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 }}
+                              >
+                                <label className="filter-label-text">
+                                  <Calendar size={18} />
+                                  Filtrar por día:
+                                </label>
+                                <div className="filter-select-wrapper">
+                                  <select
+                                    className="filter-select"
+                                    value={selectedDayFilter}
+                                    onChange={(e) => {
+                                      e.preventDefault();
+                                      setSelectedDayFilter(e.target.value);
+                                      setShowAllDays(false);
+                                    }}
+                                  >
+                                    {diasSemanaFiltros.map((dia) => {
+                                      const count = dia.key === 'todos' 
+                                        ? availableDays.length 
+                                        : availableDays.filter(d => d.diaSemana === dia.key).length;
+                                      return (
+                                        <option key={dia.key} value={dia.key}>
+                                          {dia.emoji} {dia.label} {count > 0 ? `(${count})` : ''}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                  <ChevronDown className="select-arrow" size={18} />
+                                </div>
+                              </motion.div>
+
                               <div className="days-grid">
-                                {(showAllDays ? availableDays : availableDays.slice(0, 6)).map((day, index) => (
+                                {(showAllDays ? getFilteredDays() : getFilteredDays().slice(0, 6)).map((day, index) => (
                                   <button
                                     key={index}
                                     type="button"
@@ -931,7 +998,7 @@ const Home = () => {
                               </div>
                               
                               {/* Botón para mostrar más días */}
-                              {availableDays.length > 6 && (
+                              {getFilteredDays().length > 6 && (
                                 <motion.button
                                   type="button"
                                   className="show-more-days-btn"
@@ -947,7 +1014,7 @@ const Home = () => {
                                     </>
                                   ) : (
                                     <>
-                                      Mostrar más días ({availableDays.length - 6} más)
+                                      Mostrar más días ({getFilteredDays().length - 6} más)
                                       <ChevronDown size={18} />
                                     </>
                                   )}

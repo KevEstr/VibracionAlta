@@ -1,0 +1,16 @@
+{
+  "short_name": "Vibración Alta",
+  "name": "Vibración Alta - Terapia Angelical y Reiki",
+  "description": "Reserva tu sesión de Terapia Angelical y Reiki",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "any",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4d406b",
+  "background_color": "#1a1a2e"
+}
