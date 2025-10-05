@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <!-- CRÍTICO: Detectar móvil PRIMERO antes de cargar CUALQUIER CSS -->
+    <script>
+      (function() {
+        const isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+          document.documentElement.classList.add('is-mobile');
+        } else {
+          document.documentElement.classList.add('is-desktop');
+        }
+      })();
+    </script>
+    
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

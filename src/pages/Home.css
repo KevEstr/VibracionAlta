@@ -9,65 +9,99 @@
 }
 
 /* ===============================================
-   OPTIMIZACIONES AGRESIVAS PARA MÓVIL
+   OPTIMIZACIONES - MOBILE FIRST (Sin FOUC)
    =============================================== */
+
+/* Por defecto NO aplicar blur (mobile first) */
+/* Desktop aplicará blur después */
+
+.is-mobile .home {
+  background-attachment: scroll !important;
+}
+
+.is-mobile * {
+  transition-duration: 0.15s !important;
+}
+
+.is-mobile .step-content,
+.is-mobile .input-field,
+.is-mobile .time-slot-button,
+.is-mobile .day-option,
+.is-mobile .booking-container {
+  transform: translateZ(0);
+  will-change: auto;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.is-mobile .booking-section.mobile-optimized {
+  animation: none !important;
+  transition: none !important;
+}
+
+.is-mobile .booking-container {
+  padding: 1rem !important;
+}
+
+.is-mobile .spiritual-form {
+  border-radius: 15px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* DESKTOP: SIN BLUR - TODO ELIMINADO */
+.is-desktop .logo {
+  backdrop-filter: none !important;
+}
+
+/* Removido el backdrop-filter del hero-subtitle para que sea transparente */
+
+.is-desktop .booking-button,
+.is-desktop .comprobante-upload-box,
+.is-desktop .time-slot-button,
+.is-desktop .day-card,
+.is-desktop .form-card,
+.is-desktop .booking-section,
+.is-desktop .show-more-days-btn,
+.is-desktop .submit-button,
+.is-desktop .upload-button,
+.is-desktop .uploaded-image-preview {
+  backdrop-filter: none !important;
+}
+
+/* SIN blur en el formulario principal - opacidad sólida */
+.is-desktop .spiritual-form {
+  backdrop-filter: none !important;
+}
+
+/* Fallback para navegadores sin JS */
 @media (max-width: 768px) {
-  /* MANTENER IMAGEN DE FONDO PERO OPTIMIZADA */
   .home {
-    background-attachment: scroll !important; /* Cambiar de fixed a scroll para mejor rendimiento */
+    background-attachment: scroll !important;
   }
   
-  /* ELIMINAR TODO BLUR EN MÓVIL */
+  .logo,
+  .booking-button,
   .spiritual-form,
   .comprobante-upload-box,
   .input-field,
   .time-slot-button,
   .day-option,
+  .day-card,
   .form-card,
-  .booking-section {
+  .booking-section,
+  .show-more-days-btn,
+  .submit-button,
+  .upload-button,
+  .uploaded-image-preview {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-  }
-  
-  /* Forzar aceleración GPU */
-  .step-content,
-  .input-field,
-  .time-slot-button,
-  .day-option,
-  .booking-container {
-    transform: translateZ(0);
-    will-change: auto;
-    backface-visibility: hidden;
-    perspective: 1000px;
-  }
-  
-  /* Desactivar sombras pesadas */
-  .spiritual-form,
-  .input-field,
-  .time-slot-button,
-  .day-option {
     box-shadow: none !important;
   }
   
-  /* Simplificar transiciones */
-  * {
-    transition-duration: 0.15s !important;
-  }
-  
-  /* Optimización específica para booking section */
-  .booking-section.mobile-optimized {
-    animation: none !important;
-    transition: none !important;
-  }
-  
-  /* Reducir complejidad visual */
-  .booking-container {
-    padding: 1rem !important;
-  }
-  
-  .spiritual-form {
-    border-radius: 15px !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  /* Asegurar que hero-subtitle no tenga backdrop en móvil */
+  .hero-subtitle {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }
 
@@ -194,7 +228,6 @@
   position: relative;
   z-index: 2;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
 }
 
 .logo:hover {
@@ -309,7 +342,7 @@
   box-shadow: 
     0 8px 25px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
+  /* backdrop-filter: blur(20px); */ /* Movido a .is-desktop para evitar FOUC */
   position: relative;
   overflow: hidden;
   font-family: 'Georgia', serif;
@@ -606,13 +639,13 @@
   z-index: 10;
 }
 
-/* Formulario Espiritual - Opaco para ocultar fondo borroso */
+/* Formulario Espiritual - Fondo OPACO para máxima legibilidad */
 .spiritual-form {
   background: linear-gradient(
     135deg,
-    rgba(77, 64, 107, 0.85) 0%,
-    rgba(90, 140, 128, 0.8) 50%,
-    rgba(77, 64, 107, 0.75) 100%
+    rgba(77, 64, 107, 0.98) 0%,
+    rgba(90, 140, 128, 0.96) 50%,
+    rgba(77, 64, 107, 0.95) 100%
   );
   border-radius: 30px;
   box-shadow: 
@@ -622,6 +655,7 @@
   overflow: hidden;
   padding: 2.5rem;
   position: relative;
+  backdrop-filter: none; /* Sin blur aquí */
 }
 
 /* Header del Formulario */
@@ -636,8 +670,8 @@
   color: #ffffff;
   margin-bottom: 1rem;
   text-shadow: 
-    2px 2px 4px rgba(0, 0, 0, 0.8),
-    0 0 10px rgba(255, 255, 255, 0.2);
+    2px 2px 6px rgba(0, 0, 0, 0.95),
+    0 0 15px rgba(0, 0, 0, 0.5);
   font-family: 'Georgia', serif;
 }
 
@@ -646,8 +680,8 @@
   color: #ffffff;
   font-weight: 500;
   text-shadow: 
-    1px 1px 2px rgba(0, 0, 0, 0.8),
-    0 0 5px rgba(255, 255, 255, 0.1);
+    2px 2px 4px rgba(0, 0, 0, 0.95),
+    0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Steps Container */
@@ -683,7 +717,7 @@
   height: 40px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */ /* Movido a .is-desktop para evitar FOUC */
   border: 2px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
@@ -763,7 +797,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
+  /* backdrop-filter: blur(15px); */ /* Movido a .is-desktop para evitar FOUC */
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   box-shadow: 
@@ -815,19 +849,20 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: rgba(255, 255, 255, 0.4);
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 15px;
   padding: 1rem 1.5rem;
   transition: all 0.3s ease;
   box-shadow: 
     0 4px 15px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: none; /* Sin blur */
 }
 
 .input-field:focus-within {
-  border-color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.35);
   box-shadow: 
     0 6px 20px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(255, 255, 255, 0.2),
@@ -1010,7 +1045,7 @@
 .time-slot {
   padding: 0.75rem; /* menos padding para reducir altura total */
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 15px;
   color: rgba(255, 255, 255, 0.9);
@@ -1041,7 +1076,7 @@
   width: 100%;
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 15px;
   color: white;
@@ -1078,7 +1113,7 @@
   align-items: center;
   padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 15px;
 }
@@ -1523,6 +1558,56 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Filtro desplegable responsive en móvil */
+  .day-filter-container {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    align-items: stretch;
+  }
+
+  .filter-label-text {
+    justify-content: center;
+    font-size: 0.95rem;
+  }
+
+  .filter-select-wrapper {
+    max-width: 100%;
+  }
+
+  .filter-select {
+    padding: 0.85rem 2.5rem 0.85rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .select-arrow {
+    right: 0.75rem;
+  }
+
+  .days-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* 2 columnas fijas en móvil */
+    gap: 0.75rem !important;
+  }
+
+  .available-days-section {
+    padding: 1rem;
+  }
+  
+  /* Ajustar botones de día para 2 columnas */
+  .day-button {
+    min-height: 110px !important;
+    font-size: 0.9rem !important;
+    padding: 0.75rem !important;
+  }
+  
+  .day-date {
+    font-size: 0.85rem !important;
+  }
+  
+  .day-weekday {
+    font-size: 0.8rem !important;
+  }
+
   .form-navigation {
     flex-direction: column;
     gap: 0.5rem; /* menos espacio entre navegación en pantallas pequeñas */
@@ -1659,6 +1744,49 @@
     bottom: 25%;
     left: 15%;
   }
+
+  /* Filtro ultra compacto en móviles pequeños */
+  .day-filter-container {
+    padding: 0.75rem;
+    gap: 0.6rem;
+  }
+
+  .filter-label-text {
+    font-size: 0.9rem;
+  }
+
+  .filter-select {
+    padding: 0.75rem 2.5rem 0.75rem 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .days-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* 2 columnas también en móviles pequeños */
+    gap: 0.5rem !important;
+  }
+  
+  /* Ajustar botones para móviles pequeños */
+  .day-button {
+    padding: 0.7rem 0.4rem !important;
+    min-height: 95px !important;
+  }
+  
+  .day-header {
+    gap: 0.25rem !important;
+  }
+  
+  .day-date {
+    font-size: 0.8rem !important;
+  }
+  
+  .day-weekday {
+    font-size: 0.75rem !important;
+  }
+  
+  .day-time {
+    font-size: 0.75rem !important;
+    gap: 0.25rem !important;
+  }
 }
 
 /* Smooth scrolling */
@@ -1689,7 +1817,7 @@ html {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
 }
 
 .slots-header {
@@ -1823,7 +1951,7 @@ html {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
 }
 
 .slot-card::before {
@@ -1957,12 +2085,24 @@ html {
 
 /* ===== NUEVOS ESTILOS PARA SELECCIÓN DE HORA Y DÍAS ===== */
 
-/* Grid de botones de hora */
+/* Grid de botones de hora - Simétrico con 6 elementos */
 .time-slots-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.6rem; /* compact grid */
-  margin-top: 0.5rem; /* menos separación encima de las horas */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Los últimos 2 elementos (5 y 6) se centran en columnas 2 y 3 */
+.time-slot-button:nth-child(5) {
+  grid-column: 2;
+}
+
+.time-slot-button:nth-child(6) {
+  grid-column: 3;
 }
 
 .time-slot-button {
@@ -1970,7 +2110,7 @@ html {
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.9rem 0.9rem; /* menos padding para reducir altura */
+  padding: 0.9rem 0.9rem;
   background: rgba(255, 255, 255, 0.08);
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 15px;
@@ -1979,7 +2119,7 @@ html {
   font-weight: 400;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
 }
 
 .time-slot-button:hover {
@@ -2039,14 +2179,121 @@ html {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
+}
+
+.days-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 }
 
 .days-label {
   display: block;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  font-weight: 400;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ===============================================
+   FILTRO DESPLEGABLE - DISEÑO ELEGANTE
+   =============================================== */
+.day-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.12), rgba(90, 140, 128, 0.12));
+  border-radius: 15px;
+  border: 2px solid rgba(147, 112, 219, 0.25);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
+}
+
+.day-filter-container:hover {
+  border-color: rgba(147, 112, 219, 0.4);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.18), rgba(90, 140, 128, 0.18));
+  box-shadow: 0 6px 20px rgba(147, 112, 219, 0.2);
+}
+
+.filter-label-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.filter-select-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 350px;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 0.9rem 3rem 0.9rem 1.2rem;
+  background: rgba(77, 64, 107, 0.6) !important;
+  border: 2px solid rgba(147, 112, 219, 0.5) !important;
+  border-radius: 12px;
+  color: rgba(255, 250, 245, 0.95) !important;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
+}
+
+.filter-select:hover {
+  background: rgba(90, 75, 120, 0.7) !important;
+  border-color: rgba(147, 112, 219, 0.7) !important;
+  box-shadow: 0 6px 16px rgba(147, 112, 219, 0.3) !important;
+}
+
+.filter-select:focus {
+  background: rgba(100, 85, 130, 0.75) !important;
+  border-color: rgba(147, 112, 219, 0.9) !important;
+  box-shadow: 0 0 0 3px rgba(147, 112, 219, 0.3) !important;
+}
+
+.filter-select option {
+  background: #3d3052;
+  color: #f5f5dc;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.filter-select option:hover,
+.filter-select option:checked {
+  background: linear-gradient(135deg, #5a4570, #4a5a60);
+  color: #ffffff;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.7);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .days-grid {
@@ -2073,7 +2320,7 @@ html {
   font-weight: 400;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
 }
 
 .show-more-days-btn:hover {
@@ -2091,26 +2338,28 @@ html {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, rgba(245, 235, 220, 0.15), rgba(230, 220, 210, 0.15));
+  border: 2px solid rgba(147, 112, 219, 0.3);
   border-radius: 12px;
-  color: white;
+  color: rgba(255, 250, 245, 0.95);
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
 }
 
 .day-button:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(245, 235, 220, 0.25), rgba(230, 220, 210, 0.25));
+  border-color: rgba(147, 112, 219, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 18px rgba(147, 112, 219, 0.25);
 }
 
 .day-button.selected {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
-  border-color: rgba(102, 126, 234, 0.8);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.4), rgba(90, 140, 128, 0.4));
+  border-color: rgba(147, 112, 219, 0.8);
+  box-shadow: 0 6px 20px rgba(147, 112, 219, 0.4);
   transform: scale(1.03);
 }
 
@@ -2154,6 +2403,16 @@ html {
   .time-slots-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
+    max-width: 100%;
+  }
+
+  /* En móvil también centrar los últimos 2 */
+  .time-slot-button:nth-child(5) {
+    grid-column: 1;
+  }
+
+  .time-slot-button:nth-child(6) {
+    grid-column: 2;
   }
 
   .days-grid {
@@ -2174,6 +2433,15 @@ html {
   .time-slot-button {
     padding: 1rem 0.75rem;
     font-size: 1rem;
+  }
+
+  /* Mantener centrado en móvil pequeño */
+  .time-slot-button:nth-child(5) {
+    grid-column: 1;
+  }
+
+  .time-slot-button:nth-child(6) {
+    grid-column: 2;
   }
 
   .days-grid {
@@ -2681,7 +2949,7 @@ html {
   justify-content: center;
   padding: 2rem 1.5rem;
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
   border: 2px dashed rgba(255, 255, 255, 0.3);
   border-radius: 20px;
   cursor: pointer;
@@ -2858,7 +3126,7 @@ html {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
 }
 
 .change-file-btn:hover {
@@ -2883,7 +3151,7 @@ html {
   font-weight: 500;
   text-decoration: none;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none; /* Sin blur - evitar acumulación */
   box-shadow: 0 4px 12px rgba(147, 112, 219, 0.1);
 }
 

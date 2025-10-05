@@ -14,6 +14,7 @@ const Home = () => {
   const [loadingDays, setLoadingDays] = useState(false);
   const [error, setError] = useState(null);
   const [showAllDays, setShowAllDays] = useState(false); // Para mostrar/ocultar días
+  const [selectedDayFilter, setSelectedDayFilter] = useState('todos'); // Filtro por día de la semana
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -65,9 +66,11 @@ const Home = () => {
   // Horarios disponibles fijos
   const timeSlots = [
     { value: "09:00", label: "9:00 AM" },
-    { value: "13:30", label: "1:30 PM" },
-    { value: "15:30", label: "3:30 PM" },
-    { value: "17:30", label: "5:30 PM" }
+    { value: "10:30", label: "10:30 AM" },
+    { value: "12:30", label: "12:30 PM" },
+    { value: "14:00", label: "2:00 PM" },
+    { value: "16:00", label: "4:00 PM" },
+    { value: "18:00", label: "6:00 PM" }
   ];
 
   const handleInputChange = (field, value) => {
@@ -151,6 +154,25 @@ const Home = () => {
     'Friday': 'Viernes',
     'Saturday': 'Sábado',
     'Sunday': 'Domingo'
+  };
+
+  // Días de la semana para filtros (orden correcto)
+  const diasSemanaFiltros = [
+    { key: 'todos', label: 'Todos', emoji: '📅' },
+    { key: 'Lunes', label: 'Lunes', emoji: '📌' },
+    { key: 'Martes', label: 'Martes', emoji: '📌' },
+    { key: 'Miércoles', label: 'Miércoles', emoji: '📌' },
+    { key: 'Jueves', label: 'Jueves', emoji: '📌' },
+    { key: 'Viernes', label: 'Viernes', emoji: '📌' },
+    { key: 'Sábado', label: 'Sábado', emoji: '📌' }
+  ];
+
+  // Función para filtrar días según el día de la semana seleccionado
+  const getFilteredDays = () => {
+    if (selectedDayFilter === 'todos') {
+      return availableDays;
+    }
+    return availableDays.filter(day => day.diaSemana === selectedDayFilter);
   };
 
   // Función para convertir hora 24h a 12h con AM/PM
@@ -323,9 +345,18 @@ const Home = () => {
     });
   };
 
-  // Mostrar MyBookings si está activo
+  // Mostrar MyBookings si está activo con animación suave
   if (showMyBookings) {
-    return <MyBookings onBack={handleBackFromBookings} />;
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+      >
+        <MyBookings onBack={handleBackFromBookings} />
+      </motion.div>
+    );
   }
 
   // Pantalla de éxito
@@ -869,11 +900,50 @@ const Home = () => {
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.4 }}
                             >
-                              <label className="days-label">
-                                Días Disponibles ({availableDays.length}) *
-                              </label>
+                              <div className="days-header">
+                                <label className="days-label">
+                                  Días Disponibles ({getFilteredDays().length}) *
+                                </label>
+                              </div>
+
+                              {/* Filtro desplegable por día de la semana */}
+                              <motion.div 
+                                className="day-filter-container"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 }}
+                              >
+                                <label className="filter-label-text">
+                                  <Calendar size={18} />
+                                  Filtrar por día:
+                                </label>
+                                <div className="filter-select-wrapper">
+                                  <select
+                                    className="filter-select"
+                                    value={selectedDayFilter}
+                                    onChange={(e) => {
+                                      e.preventDefault();
+                                      setSelectedDayFilter(e.target.value);
+                                      setShowAllDays(false);
+                                    }}
+                                  >
+                                    {diasSemanaFiltros.map((dia) => {
+                                      const count = dia.key === 'todos' 
+                                        ? availableDays.length 
+                                        : availableDays.filter(d => d.diaSemana === dia.key).length;
+                                      return (
+                                        <option key={dia.key} value={dia.key}>
+                                          {dia.emoji} {dia.label} {count > 0 ? `(${count})` : ''}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                  <ChevronDown className="select-arrow" size={18} />
+                                </div>
+                              </motion.div>
+
                               <div className="days-grid">
-                                {(showAllDays ? availableDays : availableDays.slice(0, 6)).map((day, index) => (
+                                {(showAllDays ? getFilteredDays() : getFilteredDays().slice(0, 6)).map((day, index) => (
                                   <button
                                     key={index}
                                     type="button"
@@ -894,7 +964,7 @@ const Home = () => {
                               </div>
                               
                               {/* Botón para mostrar más días */}
-                              {availableDays.length > 6 && (
+                              {getFilteredDays().length > 6 && (
                                 <motion.button
                                   type="button"
                                   className="show-more-days-btn"
@@ -910,7 +980,7 @@ const Home = () => {
                                     </>
                                   ) : (
                                     <>
-                                      Mostrar más días ({availableDays.length - 6} más)
+                                      Mostrar más días ({getFilteredDays().length - 6} más)
                                       <ChevronDown size={18} />
                                     </>
                                   )}

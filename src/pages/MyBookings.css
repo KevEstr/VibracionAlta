@@ -73,24 +73,30 @@
 
 .back-button {
   position: absolute;
-  left: 0;
+  right: 0; /* Cambiar de left a right para mejor posición en móvil */
   top: 0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 0.9rem;
-  background: linear-gradient(180deg,#eef6ff,#e6f0ff);
-  border: 1px solid rgba(33,48,63,0.08);
-  border-radius: 10px;
-  color: #1f3346;
+  padding: 0.75rem 1.2rem;
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.15), rgba(90, 140, 128, 0.15));
+  border: 2px solid rgba(147, 112, 219, 0.3);
+  border-radius: 12px;
+  color: #4d406b;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 10px 28px rgba(33,48,63,0.08);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(147, 112, 219, 0.2);
+  backdrop-filter: blur(10px);
 }
 
-.back-button:hover { opacity: 0.9; }
+.back-button:hover {
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.25), rgba(90, 140, 128, 0.25));
+  border-color: rgba(147, 112, 219, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(147, 112, 219, 0.3);
+}
 
 .bookings-title-wrapper {
   display: flex;
@@ -120,23 +126,37 @@
 }
 
 .search-card {
-  background: linear-gradient(180deg,#f7fbff,#eef6ff);
-  border: 1px solid rgba(33,48,63,0.08);
-  border-radius: 18px;
-  padding: 1.6rem;
-  box-shadow: 0 10px 36px rgba(33,48,63,0.06);
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(147, 112, 219, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 
+    0 8px 32px rgba(147, 112, 219, 0.15),
+    0 4px 16px rgba(90, 140, 128, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.search-card:hover {
+  border-color: rgba(147, 112, 219, 0.3);
+  box-shadow: 
+    0 12px 40px rgba(147, 112, 219, 0.2),
+    0 6px 20px rgba(90, 140, 128, 0.15);
+  transform: translateY(-2px);
 }
 
 .search-card-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
-  color: #1f3b63;
+  margin-bottom: 1.5rem;
+  color: #4d406b;
 }
 
-
-.search-header-icon { color: #244e8f; }
+.search-header-icon { 
+  color: #9370db;
+  filter: drop-shadow(0 2px 4px rgba(147, 112, 219, 0.3));
+}
 
 .search-card-header h2 { margin: 0; font-size: 1.25rem; font-weight: 700; }
 
@@ -157,39 +177,50 @@
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(147, 112, 219, 0.5);
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.85rem 1rem 0.85rem 3rem;
-  background: #f7fbff;
-  border: 1px solid rgba(33,48,63,0.09);
-  border-radius: 10px;
-  color: #1f3346;
-  font-size: 0.98rem;
-  transition: all 0.16s ease;
+  padding: 1rem 1rem 1rem 3rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(147, 112, 219, 0.2);
+  border-radius: 12px;
+  color: #4d406b;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-.search-input:focus { outline: none; border-color: #244e8f; }
+.search-input:focus { 
+  outline: none;
+  border-color: rgba(147, 112, 219, 0.5);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 15px rgba(147, 112, 219, 0.15);
+}
 
-.search-input::placeholder { color: #7f98bf; }
+.search-input::placeholder { color: rgba(77, 64, 107, 0.5); }
 
 .search-button {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.85rem 1.25rem;
-  background: linear-gradient(90deg,#3a63ad,#5f86c9);
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #9370db, #5a8c80);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #ffffff;
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.16s ease;
-  box-shadow: 0 10px 30px rgba(36,78,143,0.18);
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(147, 112, 219, 0.3);
+}
+
+.search-button:hover {
+  background: linear-gradient(135deg, #a78bdb, #6a9c90);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(147, 112, 219, 0.4);
 }
 
 .search-button:hover:not(:disabled) { opacity: 0.9; }
@@ -819,8 +850,16 @@
 
   .back-button {
     position: static;
-    margin-bottom: 1.5rem;
+    margin: 0 auto 2rem auto; /* Centrar en móvil */
     width: fit-content;
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .bookings-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .search-card {
