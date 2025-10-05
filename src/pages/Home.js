@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Heart, Sparkles, ChevronDown, User, Mail, Phone, Clock, CheckCircle, X, Search } from 'lucide-react';
+import { Calendar, Heart, Sparkles, ChevronDown, User, Mail, Phone, Clock, CheckCircle, X, Search, Upload } from 'lucide-react';
 import './Home.css';
 import MyBookings from './MyBookings';
 
@@ -24,6 +24,8 @@ const Home = () => {
     primeraConsulta: null,
     yaPago: null
   });
+  const [comprobanteUrl, setComprobanteUrl] = useState(null);
+  const [uploadingComprobante, setUploadingComprobante] = useState(false);
 
   const scrollToBooking = () => {
     setShowBooking(true);
@@ -58,6 +60,58 @@ const Home = () => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Función para subir comprobante a Cloudinary
+  const handleComprobanteUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validar tipo de archivo
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'];
+    if (!validTypes.includes(file.type)) {
+      alert('Por favor sube una imagen (JPG, PNG, WEBP) o PDF');
+      return;
+    }
+
+    // Validar tamaño (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('El archivo es muy grande. El tamaño máximo es 5MB');
+      return;
+    }
+
+    setUploadingComprobante(true);
+
+    try {
+      const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'dxhhrqxwm';
+      const uploadPreset = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET || 'vibracion_alta_comprobantes';
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', uploadPreset);
+      formData.append('folder', 'comprobantes_pago');
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Error al subir el archivo');
+      }
+
+      const data = await response.json();
+      setComprobanteUrl(data.secure_url);
+      console.log('Comprobante subido exitosamente:', data.secure_url);
+    } catch (error) {
+      console.error('Error al subir comprobante:', error);
+      alert('Hubo un error al subir el comprobante. Por favor intenta nuevamente.');
+    } finally {
+      setUploadingComprobante(false);
+    }
   };
 
   // Mapeo de días en inglés a español
@@ -183,8 +237,14 @@ const Home = () => {
         celular: formData.phone,
         motivo: formData.motivo || 'No especificado',
         esPrimeraVez: formData.primeraConsulta === true ? 'Sí' : formData.primeraConsulta === false ? 'No' : 'No especificado',
+        yaPago: formData.yaPago === true ? 'Sí' : 'No',
         fechaHoraISO: selectedDay.fechaHoraISO
       };
+
+      // Solo agregar comprobanteUrl si existe (si se subió un archivo)
+      if (comprobanteUrl) {
+        dataToSend.comprobanteUrl = comprobanteUrl;
+      }
 
       console.log('Enviando datos a n8n:', dataToSend);
 
@@ -252,15 +312,6 @@ const Home = () => {
         >
           <div className="success-wrapper">
             <div className="success-header">
-              <motion.div
-                className="success-icon-wrapper"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              >
-                <CheckCircle size={40} className="success-icon" />
-              </motion.div>
-
               <motion.h2
                 className="success-title"
                 initial={{ opacity: 0, y: 20 }}
@@ -276,8 +327,7 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
               >
-                Gracias por enviar una solicitud para una cita. Se enviará una confirmación de esta solicitud a tu correo. 
-                Te responderemos en breve con la confirmación definitiva de la cita.
+                ¡Gracias por reservar en Vibración Alta! Te estaremos enviando una confirmación por correo electronico.
               </motion.p>
             </div>
 
@@ -287,7 +337,7 @@ const Home = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
             >
-              <h3>Resumen de la Reserva:</h3>
+              <h3>Resumen de la Cita:</h3>
               <div className="summary-grid">
                 <div className="summary-item">
                   <div className="summary-icon">
@@ -353,6 +403,7 @@ const Home = () => {
                     primeraConsulta: null,
                     yaPago: null
                   });
+                  setComprobanteUrl(null);
                   setBookingConfirmation(null);
                 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -424,7 +475,7 @@ const Home = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Heart size={24} />
-                <span>Reservar Sesión</span>
+                <span>Agendar mi sesión ahora</span>
                 <Sparkles size={20} />
               </motion.button>
 
@@ -660,8 +711,9 @@ const Home = () => {
               <div className="spiritual-form">
                 {/* Header del Formulario */}
                 <div className="form-header">
-                  <h2>Reservar Sesión Espiritual</h2>
-                  <p>Conecta con tu esencia divina a través de la Terapia Angelical y Reiki</p>
+                  <h2>Elige el momento para tu sanación</h2>
+                  <p>A través de Terapia Angelical y Reiki, abre tu camino hacia la claridad y la transmutación.
+                  El cambio que buscas comienza hoy.</p>
                 </div>
 
                 {/* Progress Steps */}
@@ -935,7 +987,10 @@ const Home = () => {
                                   <button
                                     type="button"
                                     className={`yes-no-btn ${formData.yaPago === true ? 'selected yes' : ''}`}
-                                    onClick={() => handleInputChange('yaPago', true)}
+                                    onClick={() => {
+                                      handleInputChange('yaPago', true);
+                                      // Reset comprobante si cambia de opinión
+                                    }}
                                   >
                                     <CheckCircle size={18} />
                                     Sí
@@ -943,13 +998,93 @@ const Home = () => {
                                   <button
                                     type="button"
                                     className={`yes-no-btn ${formData.yaPago === false ? 'selected no' : ''}`}
-                                    onClick={() => handleInputChange('yaPago', false)}
+                                    onClick={() => {
+                                      handleInputChange('yaPago', false);
+                                      setComprobanteUrl(null);
+                                    }}
                                   >
                                     <X size={18} />
                                     No
                                   </button>
                                 </div>
                               </div>
+
+                              {/* Campo de Subida de Comprobante - Solo si yaPago === true */}
+                              <AnimatePresence>
+                                {formData.yaPago === true && (
+                                  <motion.div
+                                    className="comprobante-upload-section"
+                                    initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                    animate={{ opacity: 1, height: 'auto', marginTop: '1.5rem' }}
+                                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                  >
+                                    <label className="comprobante-label">
+                                      <Sparkles size={18} />
+                                      Subir Comprobante de Pago
+                                    </label>
+                                    
+                                    <div className="comprobante-upload-container">
+                                      <input
+                                        type="file"
+                                        id="comprobante-input"
+                                        className="comprobante-input"
+                                        accept="image/*,.pdf"
+                                        onChange={handleComprobanteUpload}
+                                        disabled={uploadingComprobante}
+                                      />
+                                      
+                                      <label
+                                        htmlFor="comprobante-input"
+                                        className={`comprobante-upload-box ${uploadingComprobante ? 'uploading' : ''} ${comprobanteUrl ? 'uploaded' : ''}`}
+                                      >
+                                        {uploadingComprobante ? (
+                                          <div className="upload-loading">
+                                            <div className="spinner"></div>
+                                            <span>Subiendo...</span>
+                                          </div>
+                                        ) : comprobanteUrl ? (
+                                          <div className="upload-success">
+                                            <CheckCircle size={32} className="success-icon" />
+                                            <span className="success-text">¡Comprobante subido!</span>
+                                            <button
+                                              type="button"
+                                              className="change-file-btn"
+                                              onClick={(e) => {
+                                                e.preventDefault();
+                                                setComprobanteUrl(null);
+                                              }}
+                                            >
+                                              Cambiar archivo
+                                            </button>
+                                          </div>
+                                        ) : (
+                                          <div className="upload-placeholder">
+                                            <Upload size={32} className="upload-icon" />
+                                            <span className="upload-text">Haz clic para subir</span>
+                                            <span className="upload-hint">JPG, PNG, WEBP o PDF (máx. 5MB)</span>
+                                          </div>
+                                        )}
+                                      </label>
+
+                                      {comprobanteUrl && (
+                                        <motion.a
+                                          href={comprobanteUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="view-comprobante-link"
+                                          initial={{ opacity: 0, y: -10 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          transition={{ delay: 0.2 }}
+                                        >
+                                          <Search size={16} />
+                                          Ver comprobante
+                                        </motion.a>
+                                      )}
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
                           </div>
                         </div>
@@ -1034,7 +1169,7 @@ const Home = () => {
                       ) : (
                         <>
                           <Heart size={20} />
-                          Reservar Sesión
+                          Reservar Cita
                         </>
                       )}
                     </button>

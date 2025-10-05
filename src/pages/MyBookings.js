@@ -370,10 +370,10 @@ const MyBookings = ({ onBack }) => {
         {deleteModalBooking && (
             <div className="modal-overlay">
               <div className="modal-card small">
-                <h3>Eliminar Reserva</h3>
-                <p>¿Seguro que deseas eliminar esta reserva?</p>
-                <p className="delete-warning">Ten en cuenta que está acción no se puede deshacer y en caso que quieras, deberás crear otra reserva.</p>
-                
+                <h3>Eliminar Cita</h3>
+                <p>¿Seguro que deseas eliminar esta cita?</p>
+                <p className="delete-warning">Ten en cuenta que está acción no se puede deshacer y en caso que quieras, deberás crear otra cita.</p>
+
                 <div className="modal-field">
                   <label>Motivo de cancelación</label>
                   <textarea 
