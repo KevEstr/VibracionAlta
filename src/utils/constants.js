@@ -6,7 +6,7 @@ export const APP_CONFIG = {
   author: 'Tu Nombre',
   contact: {
     email: 'contacto@vibracionalta.com',
-    phone: '+57 300 123 4567'
+    phone: '3001234567'
   }
 };
 

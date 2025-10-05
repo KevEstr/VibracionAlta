@@ -27,6 +27,18 @@ const Home = () => {
   const [comprobanteUrl, setComprobanteUrl] = useState(null);
   const [uploadingComprobante, setUploadingComprobante] = useState(false);
 
+  // Detectar si es móvil para optimizar rendimiento
+  const [isMobile, setIsMobile] = useState(false);
+  
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const scrollToBooking = () => {
     setShowBooking(true);
     setTimeout(() => {
@@ -59,6 +71,22 @@ const Home = () => {
   ];
 
   const handleInputChange = (field, value) => {
+    // Validaciones específicas por campo
+    if (field === 'name') {
+      // Solo letras y espacios
+      value = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    } else if (field === 'phone') {
+      // Solo números, sin espacios ni caracteres especiales
+      value = value.replace(/[^\d]/g, '');
+      // Limitar a 10 dígitos
+      if (value.length > 10) {
+        value = value.slice(0, 10);
+      }
+    } else if (field === 'email') {
+      // Convertir a minúsculas y eliminar espacios
+      value = value.toLowerCase().trim();
+    }
+    
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -566,23 +594,24 @@ const Home = () => {
             exit={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Elementos Espirituales de Fondo */}
-            <div className="spiritual-background-elements">
-              <motion.div
-                className="floating-element floating-1"
-                animate={{
-                  y: [0, -40, 0],
-                  rotate: [0, 15, 0],
-                  opacity: [0.3, 0.8, 0.3]
-                }}
-                transition={{
-                  duration: 12,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                ✨
-              </motion.div>
+            {/* Elementos Espirituales de Fondo - DESACTIVADOS EN MÓVIL para mejor rendimiento */}
+            {!isMobile && (
+              <div className="spiritual-background-elements">
+                <motion.div
+                  className="floating-element floating-1"
+                  animate={{
+                    y: [0, -40, 0],
+                    rotate: [0, 15, 0],
+                    opacity: [0.3, 0.8, 0.3]
+                  }}
+                  transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  ✨
+                </motion.div>
               <motion.div
                 className="floating-element floating-2"
                 animate={{
@@ -664,9 +693,11 @@ const Home = () => {
                 🌟
               </motion.div>
             </div>
+            )}
 
-            {/* Líneas de Energía Espiritual */}
-            <div className="energy-lines">
+            {/* Líneas de Energía Espiritual - DESACTIVADAS EN MÓVIL para mejor rendimiento */}
+            {!isMobile && (
+              <div className="energy-lines">
               <motion.div
                 className="energy-line line-1"
                 animate={{
@@ -706,6 +737,7 @@ const Home = () => {
                 }}
               ></motion.div>
             </div>
+            )}
 
             <div className="booking-container">
               <div className="spiritual-form">
@@ -742,43 +774,45 @@ const Home = () => {
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentStep}
-                        initial={{ opacity: 0, x: 50 }}
+                        initial={{ opacity: 0, x: isMobile ? 0 : 30 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.5 }}
+                        exit={{ opacity: 0, x: isMobile ? 0 : -30 }}
+                        transition={{ duration: isMobile ? 0.2 : 0.3, ease: [0.4, 0, 0.2, 1] }}
                         className="step-content"
                       >
-                      {/* Elementos Decorativos Laterales */}
-                      <div className="side-decorations">
-          <motion.div
-                          className="decoration-left"
-                          animate={{
-                            rotate: [0, 360],
-                            scale: [1, 1.1, 1]
-                          }}
-                          transition={{
-                            duration: 20,
-                            repeat: Infinity,
-                            ease: "linear"
-                          }}
-                        >
-                          <div className="spiritual-symbol">☯</div>
-          </motion.div>
-              <motion.div
-                          className="decoration-right"
-                          animate={{
-                            rotate: [0, -360],
-                            scale: [1, 1.1, 1]
-                          }}
-                          transition={{
-                            duration: 25,
-                            repeat: Infinity,
-                            ease: "linear"
-                          }}
-                        >
-                          <div className="spiritual-symbol">∞</div>
-                        </motion.div>
-                      </div>
+                      {/* Elementos Decorativos Laterales - DESACTIVADOS EN MÓVIL para mejor rendimiento */}
+                      {!isMobile && (
+                        <div className="side-decorations">
+                          <motion.div
+                            className="decoration-left"
+                            animate={{
+                              rotate: [0, 360],
+                              scale: [1, 1.1, 1]
+                            }}
+                            transition={{
+                              duration: 20,
+                              repeat: Infinity,
+                              ease: "linear"
+                            }}
+                          >
+                            <div className="spiritual-symbol">☯</div>
+                          </motion.div>
+                          <motion.div
+                            className="decoration-right"
+                            animate={{
+                              rotate: [0, -360],
+                              scale: [1, 1.1, 1]
+                            }}
+                            transition={{
+                              duration: 25,
+                              repeat: Infinity,
+                              ease: "linear"
+                            }}
+                          >
+                            <div className="spiritual-symbol">∞</div>
+                          </motion.div>
+                        </div>
+                      )}
                       {/* Step 1: Seleccionar Hora y Día */}
                       {currentStep === 0 && (
                         <div className="step-form">
@@ -923,6 +957,12 @@ const Home = () => {
                                 placeholder="Tu nombre completo"
                                 value={formData.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
+                                required
+                                minLength={3}
+                                maxLength={50}
+                                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+                                title="Solo letras y espacios"
+                                autoComplete="name"
                               />
                             </div>
                             <div className="input-field">
@@ -932,15 +972,26 @@ const Home = () => {
                                 placeholder="tu@email.com"
                                 value={formData.email}
                                 onChange={(e) => handleInputChange('email', e.target.value)}
+                                required
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                title="Ingresa un email válido"
+                                autoComplete="email"
                               />
                             </div>
                             <div className="input-field">
                               <Phone size={20} />
                               <input
                                 type="tel"
-                                placeholder="+57 300 123 4567"
+                                inputMode="numeric"
+                                placeholder="3001234567"
                                 value={formData.phone}
                                 onChange={(e) => handleInputChange('phone', e.target.value)}
+                                required
+                                pattern="\d{10}"
+                                minLength={10}
+                                maxLength={10}
+                                title="Ingresa 10 dígitos sin espacios (ej: 3001234567)"
+                                autoComplete="tel"
                               />
                             </div>
 
