@@ -12,19 +12,9 @@
    OPTIMIZACIONES AGRESIVAS PARA MÓVIL
    =============================================== */
 @media (max-width: 768px) {
-  /* ELIMINAR IMAGEN DE FONDO EN MÓVIL */
+  /* MANTENER IMAGEN DE FONDO PERO OPTIMIZADA */
   .home {
-    background-image: none !important;
-    background: linear-gradient(180deg, 
-      rgba(77, 64, 107, 0.95) 0%,
-      rgba(90, 140, 128, 0.9) 50%,
-      rgba(77, 64, 107, 0.95) 100%) !important;
-    background-attachment: scroll !important;
-  }
-  
-  /* ELIMINAR OVERLAY PESADO */
-  .home::before {
-    display: none !important;
+    background-attachment: scroll !important; /* Cambiar de fixed a scroll para mejor rendimiento */
   }
   
   /* ELIMINAR TODO BLUR EN MÓVIL */
