@@ -8,27 +8,90 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Optimizaciones específicas para móvil */
+/* ===============================================
+   OPTIMIZACIONES AGRESIVAS PARA MÓVIL
+   =============================================== */
 @media (max-width: 768px) {
+  /* ELIMINAR IMAGEN DE FONDO EN MÓVIL */
   .home {
-    /* Desactivar parallax en móvil para mejor rendimiento */
+    background-image: none !important;
+    background: linear-gradient(180deg, 
+      rgba(77, 64, 107, 0.95) 0%,
+      rgba(90, 140, 128, 0.9) 50%,
+      rgba(77, 64, 107, 0.95) 100%) !important;
     background-attachment: scroll !important;
   }
   
-  /* Reducir blur en móvil */
-  .home::before,
-  .spiritual-form,
-  .comprobante-upload-box {
-    backdrop-filter: blur(5px) !important;
+  /* ELIMINAR OVERLAY PESADO */
+  .home::before {
+    display: none !important;
   }
   
-  /* Forzar aceleración GPU en elementos animados */
+  /* ELIMINAR TODO BLUR EN MÓVIL */
+  .spiritual-form,
+  .comprobante-upload-box,
+  .input-field,
+  .time-slot-button,
+  .day-option,
+  .form-card,
+  .booking-section {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Simplificar fondos */
+  .spiritual-form {
+    background: rgba(77, 64, 107, 0.8) !important;
+  }
+  
+  .input-field {
+    background: rgba(255, 255, 255, 0.15) !important;
+  }
+  
+  .time-slot-button,
+  .day-option {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* Forzar aceleración GPU */
   .step-content,
   .input-field,
   .time-slot-button,
-  .day-option {
+  .day-option,
+  .booking-container {
     transform: translateZ(0);
     will-change: auto;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  /* Desactivar sombras pesadas */
+  .spiritual-form,
+  .input-field,
+  .time-slot-button,
+  .day-option {
+    box-shadow: none !important;
+  }
+  
+  /* Simplificar transiciones */
+  * {
+    transition-duration: 0.15s !important;
+  }
+  
+  /* Optimización específica para booking section */
+  .booking-section.mobile-optimized {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Reducir complejidad visual */
+  .booking-container {
+    padding: 1rem !important;
+  }
+  
+  .spiritual-form {
+    border-radius: 15px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
   }
 }
 

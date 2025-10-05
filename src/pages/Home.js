@@ -583,16 +583,16 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Booking Section - Diseño Espiritual Original */}
+      {/* Booking Section - Optimizado para móvil */}
       {showBooking && (
         <AnimatePresence>
           <motion.section 
             id="booking-section" 
-            className="booking-section"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.8 }}
+            className={`booking-section ${isMobile ? 'mobile-optimized' : ''}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: isMobile ? 0 : 0.5 }}
           >
             {/* Elementos Espirituales de Fondo - DESACTIVADOS EN MÓVIL para mejor rendimiento */}
             {!isMobile && (
@@ -774,10 +774,10 @@ const Home = () => {
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentStep}
-                        initial={{ opacity: 0, x: isMobile ? 0 : 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: isMobile ? 0 : -30 }}
-                        transition={{ duration: isMobile ? 0.2 : 0.3, ease: [0.4, 0, 0.2, 1] }}
+                        initial={false}
+                        animate={{ opacity: 1 }}
+                        exit={false}
+                        transition={{ duration: 0 }}
                         className="step-content"
                       >
                       {/* Elementos Decorativos Laterales - DESACTIVADOS EN MÓVIL para mejor rendimiento */}
