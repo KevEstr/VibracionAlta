@@ -235,7 +235,7 @@ const BookingForm = () => {
                     <input
                       type="tel"
                       className={`form-control ${errors.phone ? 'error' : ''}`}
-                      placeholder="+57 300 123 4567"
+                      placeholder="3001234567"
                       {...register('phone', { 
                         required: 'El teléfono es obligatorio',
                         pattern: {

@@ -1014,10 +1014,10 @@ const Home = () => {
                                 {formData.yaPago === true && (
                                   <motion.div
                                     className="comprobante-upload-section"
-                                    initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                                    animate={{ opacity: 1, height: 'auto', marginTop: '1.5rem' }}
-                                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                    initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                                    transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                                   >
                                     <label className="comprobante-label">
                                       <Sparkles size={18} />
@@ -1032,11 +1032,17 @@ const Home = () => {
                                         accept="image/*,.pdf"
                                         onChange={handleComprobanteUpload}
                                         disabled={uploadingComprobante}
+                                        style={{ display: 'none' }}
                                       />
                                       
-                                      <label
-                                        htmlFor="comprobante-input"
+                                      <div
                                         className={`comprobante-upload-box ${uploadingComprobante ? 'uploading' : ''} ${comprobanteUrl ? 'uploaded' : ''}`}
+                                        onClick={() => {
+                                          if (!uploadingComprobante && !comprobanteUrl) {
+                                            document.getElementById('comprobante-input').click();
+                                          }
+                                        }}
+                                        style={{ cursor: uploadingComprobante || comprobanteUrl ? 'default' : 'pointer' }}
                                       >
                                         {uploadingComprobante ? (
                                           <div className="upload-loading">
@@ -1065,7 +1071,7 @@ const Home = () => {
                                             <span className="upload-hint">JPG, PNG, WEBP o PDF (máx. 5MB)</span>
                                           </div>
                                         )}
-                                      </label>
+                                      </div>
 
                                       {comprobanteUrl && (
                                         <motion.a

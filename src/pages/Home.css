@@ -2560,7 +2560,10 @@ html {
    ============================================ */
 
 .comprobante-upload-section {
-  overflow: hidden;
+  margin-top: 1.5rem;
+  /* Optimización para iOS - usa transform en lugar de height para mejor performance */
+  transform-origin: top center;
+  will-change: transform, opacity;
 }
 
 .comprobante-label {
@@ -2598,10 +2601,15 @@ html {
   border: 2px dashed rgba(255, 255, 255, 0.3);
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 160px;
   position: relative;
   overflow: hidden;
+  /* Optimización iOS - forzar aceleración por hardware */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  transform: translateZ(0);
+  will-change: transform, background, border-color;
 }
 
 .comprobante-upload-box::before {
@@ -2615,17 +2623,28 @@ html {
   transition: left 0.6s;
 }
 
-.comprobante-upload-box:hover::before {
+.comprobante-upload-box:hover::before,
+.comprobante-upload-box:active::before {
   left: 100%;
 }
 
-.comprobante-upload-box:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(147, 112, 219, 0.6);
-  transform: translateY(-2px);
-  box-shadow: 
-    0 8px 25px rgba(147, 112, 219, 0.2),
-    inset 0 0 30px rgba(147, 112, 219, 0.1);
+/* Hover para desktop */
+@media (hover: hover) {
+  .comprobante-upload-box:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(147, 112, 219, 0.6);
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: 
+      0 8px 25px rgba(147, 112, 219, 0.2),
+      inset 0 0 30px rgba(147, 112, 219, 0.1);
+  }
+}
+
+/* Active para móvil/touch (iOS) */
+.comprobante-upload-box:active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(147, 112, 219, 0.7);
+  transform: scale(0.98) translateZ(0);
 }
 
 .comprobante-upload-box.uploading {
