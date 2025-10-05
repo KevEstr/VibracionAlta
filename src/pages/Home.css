@@ -29,20 +29,6 @@
     -webkit-backdrop-filter: none !important;
   }
   
-  /* Simplificar fondos */
-  .spiritual-form {
-    background: rgba(77, 64, 107, 0.8) !important;
-  }
-  
-  .input-field {
-    background: rgba(255, 255, 255, 0.15) !important;
-  }
-  
-  .time-slot-button,
-  .day-option {
-    background: rgba(255, 255, 255, 0.1) !important;
-  }
-  
   /* Forzar aceleración GPU */
   .step-content,
   .input-field,
