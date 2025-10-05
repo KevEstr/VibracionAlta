@@ -211,10 +211,7 @@ const Home = () => {
 
       const data = await response.json();
       
-      // 🔍 DEBUG: Ver EXACTAMENTE qué devuelve n8n
-      console.log('🔍 DATOS DESDE N8N:', JSON.stringify(data, null, 2));
-      console.log('🔍 Hora seleccionada en frontend:', timeValue);
-      console.log('🔍 Total días recibidos:', data.dias?.length);
+  // Datos recibidos de n8n (procesados sin logs de debug en producción)
       
       if (data.success && data.dias && Array.isArray(data.dias)) {
         // Traducir días al español
@@ -224,8 +221,7 @@ const Home = () => {
           diaSemana: diasEspanol[dia.diaSemana] || dia.diaSemana
         }));
         
-        // 🔍 DEBUG: Ver cómo quedan los días después de traducir
-        console.log('🔍 DÍAS TRADUCIDOS:', diasTraducidos);
+  // Días traducidos listos para renderizar
         
         setAvailableDays(diasTraducidos);
       } else {
@@ -901,30 +897,7 @@ const Home = () => {
                             </motion.div>
                           )}
 
-                          {/* 🔍 DEBUG: Panel de información */}
-                          {!loadingDays && availableDays.length > 0 && (
-                            <div style={{
-                              background: 'rgba(255, 255, 0, 0.15)',
-                              border: '2px solid rgba(255, 255, 0, 0.5)',
-                              borderRadius: '10px',
-                              padding: '1rem',
-                              marginBottom: '1rem',
-                              color: 'white',
-                              fontSize: '0.9rem'
-                            }}>
-                              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                                🔍 DEBUG - Información de n8n:
-                              </div>
-                              <div>• Hora seleccionada en frontend: <strong>{selectedTimeSlot}</strong></div>
-                              <div>• Total días recibidos de n8n: <strong>{availableDays.length}</strong></div>
-                              <div>• Primeros 3 días con sus horas:</div>
-                              {availableDays.slice(0, 3).map((d, i) => (
-                                <div key={i} style={{ marginLeft: '1rem', fontSize: '0.85rem' }}>
-                                  └ {d.fechaLegible} ({d.diaSemana}) - <strong>Hora: {d.hora}</strong>
-                                </div>
-                              ))}
-                            </div>
-                          )}
+                          {/* Debug visual eliminado para producción */}
 
                           {/* Mostrar días disponibles */}
                           {!loadingDays && availableDays.length > 0 && (
