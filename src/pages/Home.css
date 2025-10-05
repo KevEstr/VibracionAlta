@@ -1107,6 +1107,26 @@
   gap: 1rem;
 }
 
+/* Manejo de textos largos en la pantalla de confirmación
+   - Permitimos que la sección crezca hasta un máximo relativo al viewport
+     y que, si el contenido supera ese límite, aparezca scroll interno.
+   - Los campos de texto largos (detail-item.full-width) pueden envolver
+     en múltiples párrafos y se ajustan correctamente tanto en PC como en móvil.
+*/
+.confirmation-details {
+  /* crecer normalmente pero no exceder la ventana visible */
+  max-height: calc(70vh); /* se adapta bien en desktop */
+  overflow-y: auto; /* scroll interno si es necesario */
+  padding-right: 0.4rem; /* espacio para scroll bar sin romper el layout */
+}
+
+/* En pantallas pequeñas permitimos un tope ligeramente menor */
+@media (max-width: 768px) {
+  .confirmation-details {
+    max-height: calc(60vh);
+  }
+}
+
 .detail-item {
   display: flex;
   justify-content: space-between;
@@ -1132,6 +1152,15 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
+}
+
+/* Asegurar que el contenido largo dentro del detalle no se desborde
+   y que respete saltos de línea (párrafos) y ajuste de palabras. */
+.detail-item.full-width span:last-child {
+  white-space: pre-wrap; /* conservar saltos de línea del textarea */
+  word-break: break-word; /* partir palabras muy largas si es necesario */
+  overflow-wrap: anywhere;
+  max-width: 100%;
 }
 
 .detail-item.full-width span:last-child {
