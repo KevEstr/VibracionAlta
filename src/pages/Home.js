@@ -156,6 +156,38 @@ const Home = () => {
     'Sunday': 'Domingo'
   };
 
+  // Mapeo de meses abreviados en inglés a español
+  const mesesEspanol = {
+    'Jan': 'Ene',
+    'Feb': 'Feb',
+    'Mar': 'Mar',
+    'Apr': 'Abr',
+    'May': 'May',
+    'Jun': 'Jun',
+    'Jul': 'Jul',
+    'Aug': 'Ago',
+    'Sep': 'Sep',
+    'Oct': 'Oct',
+    'Nov': 'Nov',
+    'Dec': 'Dic'
+  };
+
+  // Función para traducir fechas del inglés al español
+  const traducirFecha = (fechaLegible) => {
+    if (!fechaLegible) return fechaLegible;
+    
+    // Reemplazar nombres de meses abreviados
+    let fechaTraducida = fechaLegible;
+    Object.keys(mesesEspanol).forEach(monthEn => {
+      const monthEs = mesesEspanol[monthEn];
+      // Buscar el patrón del mes en inglés y reemplazarlo
+      const regex = new RegExp(`\\b${monthEn}\\b`, 'g');
+      fechaTraducida = fechaTraducida.replace(regex, monthEs);
+    });
+    
+    return fechaTraducida;
+  };
+
   // Días de la semana para filtros (orden correcto)
   const diasSemanaFiltros = [
     { key: 'todos', label: 'Todos', emoji: '📅' },
@@ -323,7 +355,7 @@ const Home = () => {
       setBookingConfirmation({
         nombre: formData.name,
         email: formData.email,
-        fecha: selectedDay.fechaLegible,
+        fecha: traducirFecha(selectedDay.fechaLegible),
         diaSemana: selectedDay.diaSemana,
         hora: formatearHora12h(selectedTimeSlot),
         motivo: formData.motivo || 'No especificado',
@@ -961,7 +993,7 @@ const Home = () => {
                                       <Calendar size={16} />
                                       <span className="day-weekday">{day.diaSemana}</span>
                                     </div>
-                                    <div className="day-date">{day.fechaLegible}</div>
+                                    <div className="day-date">{traducirFecha(day.fechaLegible)}</div>
                                     <div className="day-time">
                                       <Clock size={14} />
                                       <span>{formatearHora12h(day.hora || selectedTimeSlot)}</span>
@@ -1009,7 +1041,7 @@ const Home = () => {
                                 <div className="slot-details">
                                   <div className="slot-detail">
                                     <Calendar size={16} />
-                                    <span>{selectedDay.fechaLegible} - {selectedDay.diaSemana}</span>
+                                    <span>{traducirFecha(selectedDay.fechaLegible)} - {selectedDay.diaSemana}</span>
                                   </div>
                                   <div className="slot-detail">
                                     <Clock size={16} />
@@ -1243,7 +1275,7 @@ const Home = () => {
                             </div>
                             <div className="detail-item">
                               <span>Fecha:</span>
-                              <span>{selectedDay?.fechaLegible}</span>
+                              <span>{traducirFecha(selectedDay?.fechaLegible)}</span>
                             </div>
                             <div className="detail-item">
                               <span>Día:</span>

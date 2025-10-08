@@ -5,6 +5,38 @@ import { Calendar, Clock, User, Mail, Phone, Upload, CheckCircle, AlertCircle, X
 import './BookingForm.css';
 
 const BookingForm = () => {
+  // Mapeo de meses abreviados en inglés a español
+  const mesesEspanol = {
+    'Jan': 'Ene',
+    'Feb': 'Feb',
+    'Mar': 'Mar',
+    'Apr': 'Abr',
+    'May': 'May',
+    'Jun': 'Jun',
+    'Jul': 'Jul',
+    'Aug': 'Ago',
+    'Sep': 'Sep',
+    'Oct': 'Oct',
+    'Nov': 'Nov',
+    'Dec': 'Dic'
+  };
+
+  // Función para traducir fechas del inglés al español
+  const traducirFecha = (fechaLegible) => {
+    if (!fechaLegible) return fechaLegible;
+    
+    // Reemplazar nombres de meses abreviados
+    let fechaTraducida = fechaLegible;
+    Object.keys(mesesEspanol).forEach(monthEn => {
+      const monthEs = mesesEspanol[monthEn];
+      // Buscar el patrón del mes en inglés y reemplazarlo
+      const regex = new RegExp(`\\b${monthEn}\\b`, 'g');
+      fechaTraducida = fechaTraducida.replace(regex, monthEs);
+    });
+    
+    return fechaTraducida;
+  };
+
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null); // "09:00", "13:30", etc
   const [availableDays, setAvailableDays] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null);
@@ -89,7 +121,7 @@ const BookingForm = () => {
         fecha: selectedDay.fecha,
         hora: selectedTimeSlot,
         fechaHoraISO: selectedDay.fechaHoraISO,
-        fechaLegible: selectedDay.fechaLegible,
+        fechaLegible: traducirFecha(selectedDay.fechaLegible),
         diaSemana: selectedDay.diaSemana,
         paymentProof: paymentProof ? paymentProof.name : null,
         timestamp: new Date().toISOString()
@@ -328,7 +360,7 @@ const BookingForm = () => {
                             <Calendar size={16} />
                             <span className="day-weekday">{day.diaSemana}</span>
                           </div>
-                          <div className="day-date">{day.fechaLegible}</div>
+                          <div className="day-date">{traducirFecha(day.fechaLegible)}</div>
                           <div className="day-time">
                             <Clock size={14} />
                             <span>{selectedTimeSlot}</span>
@@ -352,7 +384,7 @@ const BookingForm = () => {
                       <div className="slot-details">
                         <div className="slot-detail">
                           <Calendar size={16} />
-                          <span>{selectedDay.fechaLegible} - {selectedDay.diaSemana}</span>
+                          <span>{traducirFecha(selectedDay.fechaLegible)} - {selectedDay.diaSemana}</span>
                         </div>
                         <div className="slot-detail">
                           <Clock size={16} />
