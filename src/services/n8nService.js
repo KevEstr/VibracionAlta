@@ -1,7 +1,7 @@
 // Servicio para conectar con n8n webhook (producción)
-// Usamos el endpoint de días disponibles en producción
-const N8N_WEBHOOK_URL = 'https://vibracionaltacalendario.app.n8n.cloud/webhook/api/dias-disponibles';
-const N8N_BOOKING_URL = 'https://vibracionaltacalendario.app.n8n.cloud/webhook/agendar-cita';
+// Usamos variables de entorno para las URLs
+const N8N_WEBHOOK_URL = process.env.REACT_APP_N8N_WEBHOOK_URL;
+const N8N_BOOKING_URL = process.env.REACT_APP_N8N_BOOKING_URL;
 
 class N8nService {
   /**

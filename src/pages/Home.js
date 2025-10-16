@@ -229,7 +229,7 @@ const Home = () => {
     setError(null);
 
     try {
-      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook/api/dias-disponibles', {
+      const response = await fetch(process.env.REACT_APP_N8N_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -336,7 +336,7 @@ const Home = () => {
       console.log('Enviando datos a n8n:', dataToSend);
 
       // Enviar a n8n (producción)
-      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook/agendar-cita', {
+      const response = await fetch(process.env.REACT_APP_N8N_BOOKING_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

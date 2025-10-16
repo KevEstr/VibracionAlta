@@ -73,7 +73,7 @@ const BookingForm = () => {
     setError(null);
 
     try {
-      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook/api/dias-disponibles', {
+      const response = await fetch(process.env.REACT_APP_N8N_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -26,7 +26,7 @@ const MyBookings = ({ onBack }) => {
     setSearched(false);
 
     try {
-      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook/gestionar-citas', {
+      const response = await fetch(process.env.REACT_APP_N8N_MANAGE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ const MyBookings = ({ onBack }) => {
     setDeleteError(null);
 
     try {
-      const response = await fetch('https://vibracionaltacalendario.app.n8n.cloud/webhook/gestionar-citas', {
+      const response = await fetch(process.env.REACT_APP_N8N_MANAGE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
